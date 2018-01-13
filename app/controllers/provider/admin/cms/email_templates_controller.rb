@@ -44,7 +44,7 @@ class Provider::Admin::CMS::EmailTemplatesController < Sites::BaseController
   end
 
   def cms_templates_params
-    params[:cms_template].permit!
+    params.permit(:cms_template)
   end
 
 end
