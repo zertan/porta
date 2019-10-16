@@ -1,36 +1,31 @@
 module Api::IntegrationsHelper
 
-  def api_test_curl(proxy, production=false)
-    credentials = proxy.authentication_params_for_proxy
-    credentials_3scale = proxy.authentication_params_for_proxy(original_names: true)
-    extheaders = ''
-    query = ''
+  def api_test_curl(proxy, production = false)
+    command = test_curl_command(proxy, enviroment: production ? :production : :staging)
+    credentials = proxy.authentication_params_for_proxy(original_names: true)
+    tag_id = production ? 'api-production-curl' : 'api-test-curl'
+    content_tag :code, id: tag_id, 'data-credentials' => credentials.to_json do
+      command
+    end
+  end
 
-    endpoint = "#{production ? proxy.default_production_endpoint : proxy.sandbox_endpoint}#{proxy.api_test_path}"
+  def test_curl_command(proxy, enviroment: :staging)
+    credentials = proxy.authentication_params_for_proxy
+    extheaders = ''
+
+    uri = URI(proxy.send(enviroment == :staging ? :sandbox_endpoint : :default_production_endpoint))
+    uri.path = apiap? ? "/#{proxy.service.backend_api_configs.first.path}" : proxy.api_test_path
 
     case proxy.credentials_location
     when 'headers'
       credentials.each { |k, v| extheaders += " -H'#{k}: #{v}'" }
     when 'query'
-      test_path = proxy.api_test_path
-      if test_path
-        query = "#{(test_path.index('?') ? '&' : '?')}#{credentials.to_query}"
-      else
-        query = "?#{credentials.to_query}"
-      end
+      uri.query = credentials.to_query
     when 'authorization'
-      uri = URI(endpoint)
-
       uri.user, uri.password = proxy.authorization_credentials
-
-      endpoint = uri.to_s
     end
 
-    content_tag :code,
-                id: (production ? 'api-production-curl' : 'api-test-curl'),
-                'data-credentials' => credentials_3scale.to_json do
-      %(curl "#{endpoint}#{query}" #{extheaders})
-    end
+    "curl \"#{uri.to_s}\" #{extheaders}"
   end
 
   def is_https?(url)
