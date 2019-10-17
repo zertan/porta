@@ -31,7 +31,10 @@ module Api::IntegrationsHelper
     end
 
     def path
-      apiap? ? proxy.service.backend_api_configs.first.path : proxy.api_test_path
+      return proxy.api_test_path unless apiap?
+
+      proxy_rules = proxy.proxy_rules
+      proxy_rules.any? ? proxy_rules.first[:pattern] : '/'
     end
 
     def apiap?
@@ -58,7 +61,7 @@ module Api::IntegrationsHelper
 
       attr_reader :config
 
-      delegate :sandbox_endpoint, :credentials_location, :api_test_path, to: :proxy
+      delegate :sandbox_endpoint, :credentials_location, :api_test_path, :proxy_rules, to: :proxy
 
       def default_production_endpoint
         proxy.endpoint
@@ -78,34 +81,16 @@ module Api::IntegrationsHelper
         params.values_at(:user_key).compact.presence || params.values_at(:app_id, :app_key)
       end
 
-      class ServiceFromConfig < Service
-        attr_writer :backend_api_configs
-
-        def backend_api_configs
-          @backend_api_configs || [Struct.new(:path).new('/')]
-        end
-      end
-
-      def service
-        @service ||= begin
-          object = ServiceFromConfig.find(proxy.service_id)
-
-          routing_policy = proxy.policy_chain.find { |policy| policy[:name] == 'routing' }.try(:dig, :configuration, :rules).try(:first)
-          if routing_policy.present?
-            path_pattern = (routing_policy.dig(:condition, :operations) || []).first.try(:dig, :value)
-            object.backend_api_configs = [Struct.new(:path).new(path_pattern.split('.*').first)] if path_pattern
-          end
-
-          object
-        end
-      end
-
       delegate :provider_can_use?, to: 'service.account'
 
       protected
 
       def proxy
         @proxy ||= ActiveSupport::OrderedOptions.new.merge(config[:proxy])
+      end
+
+      def service
+        @service ||= Service.find(proxy.service_id)
       end
     end
   end
