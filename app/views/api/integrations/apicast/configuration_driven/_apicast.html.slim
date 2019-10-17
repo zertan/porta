@@ -58,7 +58,8 @@ section.Configuration class=('Configuration--is-promoted' unless deployment_opti
               = @show_presenter.last_sandbox_config.version
             dt.u-dl-term Test Curl
             dd.u-dl-definition
-              = api_test_curl(@proxy)
+              code id="api-test-curl"
+                = config_based_test_curl_command(@proxy)
             dt.u-dl-term Promote
             dd.u-dl-definition
               = semantic_form_for @proxy, url: promote_to_production_admin_service_integration_path(@service, anchor: 'production') do |f|
