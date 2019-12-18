@@ -1,5 +1,5 @@
 base: &base
-  enabled: true
+  enabled: <%= ENV.fetch('MESSAGE_BUS_ENABLED', true) %>
   redis:
     url: "<%= ENV['MESSAGE_BUS_REDIS_URL'] %>"
     pool_size: <%= ENV.fetch('RAILS_MAX_THREADS', 5) %>
