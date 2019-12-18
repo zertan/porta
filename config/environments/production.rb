@@ -42,7 +42,7 @@ System::Application.configure do
   config.serve_static_files = true
   config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
 
-  config.liquid.resolver_caching = true
+  config.liquid.resolver_caching = ActiveRecord::Type::Boolean.new.type_cast_from_user(ENV.fetch('LIQUID_RESOLVER_CACHING', true))
 
   config.three_scale.payments.enabled = true
 
