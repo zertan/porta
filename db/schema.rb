@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200121142649) do
+ActiveRecord::Schema.define(version: 20200217171451) do
 
   create_table "access_tokens", id: :bigint, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.bigint   "owner_id",                                  null: false
@@ -1241,7 +1241,7 @@ ActiveRecord::Schema.define(version: 20200121142649) do
     t.boolean  "can_create_service",                                default: false,             null: false
     t.string   "spam_protection_level",                             default: "none",            null: false
     t.bigint   "tenant_id"
-    t.string   "end_users_switch",                                                              null: false
+    t.string   "end_users_switch"
     t.string   "multiple_applications_switch",                                                  null: false
     t.string   "multiple_users_switch",                                                         null: false
     t.string   "finance_switch",                                                                null: false
