@@ -21,6 +21,8 @@ class Settings < ApplicationRecord
   before_create :generate_sso_key
   before_create :set_forum_enabled
 
+  before_save :temp_end_users_switch
+
   alias provider account
 
   def self.columns
@@ -98,6 +100,10 @@ class Settings < ApplicationRecord
   delegate :provider_id_for_audits, :to => :account, :allow_nil => true
 
   private
+
+  def temp_end_users_switch
+    self.end_users_switch = false
+  end
 
   def not_custom_account_plans
     @not_custom_account_plans ||= provider.account_plans.not_custom
