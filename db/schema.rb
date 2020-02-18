@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20200217171451) do
     t.string   "request_uuid"
     t.index ["action"], name: "index_audits_on_action", using: :btree
     t.index ["associated_id", "associated_type"], name: "associated_index", using: :btree
+    t.index ["auditable_id", "auditable_type", "version"], name: "index_audits_on_auditable_id_and_auditable_type_and_version", using: :btree
     t.index ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
     t.index ["created_at"], name: "index_audits_on_created_at", using: :btree
     t.index ["kind"], name: "index_audits_on_kind", using: :btree
@@ -213,7 +214,7 @@ ActiveRecord::Schema.define(version: 20200217171451) do
     t.index ["account_id"], name: "index_authentication_providers_on_account_id", using: :btree
   end
 
-  create_table "backend_api_configs", id: :bigint, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+  create_table "backend_api_configs", id: :bigint, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string   "path",           default: ""
     t.bigint   "service_id"
     t.bigint   "backend_api_id"
@@ -225,7 +226,7 @@ ActiveRecord::Schema.define(version: 20200217171451) do
     t.index ["service_id"], name: "index_backend_api_configs_on_service_id", using: :btree
   end
 
-  create_table "backend_apis", id: :bigint, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
+  create_table "backend_apis", id: :bigint, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string   "name",             limit: 511,                            null: false
     t.string   "system_name",                                             null: false
     t.text     "description",      limit: 16777215
