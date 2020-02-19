@@ -466,14 +466,18 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test 'Account.master returns master account' do
-    Account.delete_all
-    FactoryBot.build_stubbed(:simple_account) # create one normal account, so I don't get false positives
+    begin
+      Account.delete_all
+      FactoryBot.build_stubbed(:simple_account) # create one normal account, so I don't get false positives
 
-    master_account = Account.new(org_name: 'master')
-    master_account.master = true
-    master_account.save!
+      master_account = Account.new(org_name: 'master')
+      master_account.master = true
+      master_account.save!
 
-    assert_equal master_account, Account.master
+      assert_equal master_account, Account.master
+    ensure
+      Account.delete_all
+    end
   end
 
   test 'only one master account can be created' do
