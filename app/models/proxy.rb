@@ -364,11 +364,15 @@ class Proxy < ApplicationRecord
   def save_and_deploy(attrs = {})
     saved = update_attributes(attrs)
 
+    puts "--- SAVED: #{saved}"
+    puts "--- ERRORS SAVING: #{self.errors.full_messages}"
+
     analytics.track('Sandbox Proxy updated', analytics_attributes.merge(success: saved))
 
     return false unless saved
 
     success = ProxyDeploymentService.call(self, v1_compatible: true)
+    puts "--- DEPLOYED: #{success}"
     analytics.track('Sandbox Proxy Deploy', success: success)
     success
   end

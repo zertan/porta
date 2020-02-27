@@ -23,6 +23,7 @@ class ProxyDeploymentService
   end
 
   def call
+    puts "---- ENVIRONMENT #{@environment}"
     case @environment
     when :staging, :sandbox
       deploy
@@ -36,21 +37,27 @@ class ProxyDeploymentService
   private
 
   def deploy
+    puts "----- DEPLOY - is deployable? #{deployable?}"
     return true unless deployable?
 
     if service_mesh_integration?
+      puts "----- service_mesh_integration? - deploy_v2 && deploy_production_v2 #{deploy_v2 && deploy_production_v2}"
       deploy_v2 && deploy_production_v2
     elsif apicast_configuration_driven?
+      puts "----- apicast_configuration_driven? - deploy_v2 #{deploy_v2}"
       deploy_v2
     elsif @v1_compatible
+      puts "----- @v1_compatible - deploy_v1 #{deploy_v1}"
       deploy_v1
     end
   end
 
   def deploy_production
     if apicast_configuration_driven?
+      puts "----- apicast_configuration_driven? - deploy_production_v2 #{deploy_production_v2}"
       deploy_production_v2
     elsif @proxy.ready_to_deploy?
+      puts "----- @proxy.ready_to_deploy? - provider.deploy_production_apicast #{provider.deploy_production_apicast}"
       provider.deploy_production_apicast
     end
   end
