@@ -20,7 +20,12 @@ class ApicastV2DeploymentService
     puts "new_config.differs_from?(latest_config) <- #{new_config.differs_from?(latest_config)}"
 
     if new_config.differs_from?(latest_config)
-      pp (new_config.save && new_config)
+      if new_config.save
+        pp new_config
+      else
+        pp new_config.errors.full_messages
+        false
+      end
     else
       pp latest_config
     end
