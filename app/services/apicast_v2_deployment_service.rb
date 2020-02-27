@@ -8,14 +8,21 @@ class ApicastV2DeploymentService
   end
 
   def call(environment:, user: User.current)
+    puts "--------------- ApicastV2DeploymentService#call"
     default_params = { proxy: proxy, user: user, environment: environment }
     latest_config  = ProxyConfig.where(default_params).newest_first.first
     new_config     = ProxyConfig.new(default_params.merge(content: json_source))
 
+    puts "default_params: #{default_params}"
+    pp "latest_config: #{latest_config}"
+    pp "new_config: #{new_config}"
+
+    puts "new_config.differs_from?(latest_config) <- #{new_config.differs_from?(latest_config)}"
+
     if new_config.differs_from?(latest_config)
-      new_config.save && new_config
+      pp (new_config.save && new_config)
     else
-      latest_config
+      pp latest_config
     end
   end
 
