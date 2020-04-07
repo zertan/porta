@@ -3,18 +3,38 @@ page_title: Accounts | Portafly
 page_title_description: Page title of the Accounts page
 body_title: Accounts
 body_title_description": Body title of the Accounts page
+header_buttons:
+  create_account: Create account
+  create_account_description: Title of Create action button
+  export_accounts: Export all accounts
+  export_accounts_description: Title of Export all accounts button
 accounts_table:
+  data_toolbar:
+    bulk_dropdown:
+      action_0: Bulk Action 0
+      action_0_description: First bulk action
+      action_1: Bulk Action 1
+      action_1_description: Second bulk action
+    actions_dropdown:
+      title: Actions
+      title_description: Title of the Actions dropdown
+      action_0: Action 0
+      action_0_description: First action
+      action_1: Action 1
+      action_1_description: Second action
   aria_label: Accounts list
   aria_label_description: Aria label of the Accounts table component
   empty_state: There are no accounts
   empty_state_description: Message of the Accounts table empty state
-  col_group: Group/org.
-  col_group_description: Title of the Group/org. column
+  col_group: Group/organization
+  col_group_description: Title of the Group/organization column
   col_admin: Admin
   col_admin_description: Title of the Admin column
   col_signup: Signup date
   col_signup_description: Title of the Signup date column
-  col_apps: Apps
-  col_apps_description: Title of the Apps column
+  col_apps: Applications
+  col_apps_description: Title of the Applications column
   col_state: State
   col_state_description: Title of the State column
+  col_actions: Actions
+  col_actions_description: Title of Actions column
