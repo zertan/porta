@@ -5,8 +5,9 @@ import {
   TableBody,
   sortable,
   OnSort,
+  ICell,
   IRow,
-  ICell
+  OnSelect
 } from '@patternfly/react-table'
 import { SimpleEmptyState } from 'components'
 import { IDeveloperAccount } from 'types'
@@ -21,7 +22,7 @@ import {
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
 import { DeveloperAccountsActionsDropdown } from './DeveloperAccountsActionsDropdown'
-import { DeveloperAccountsCheckboxDropdown } from './DeveloperAccountsCheckboxDropdown'
+import { DeveloperAccountsBulkSelector } from './DeveloperAccountsBulkSelector'
 import { DeveloperAccountsSearchWidget } from './DeveloperAccountsSearchWidget'
 
 export interface IDeveloperAccountsTable {
@@ -37,6 +38,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
   const [sortBy, setSortBy] = useState({})
   const [page, setPage] = useState(0)
+  const perPage = 10
+  const [isAllSelected, setIsAllSelected] = useState(false)
 
   const FILTERABLE_COLS = [
     t('accounts_table.col_group'),
@@ -51,7 +54,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     t('accounts_table.col_actions')
   ]
 
-  const rows: IRow[] = accounts.map((a) => ({
+  const initialRows: IRow[] = accounts.map((a) => ({
+    key: a.id,
     cells: [
       a.org_name,
       a.admin_name,
@@ -62,6 +66,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     ],
     selected: false
   }))
+  const [rows, setRows] = useState(initialRows)
 
   const onSort: OnSort = () => {
     // TODO
@@ -73,8 +78,27 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setPage(newPage)
   }
 
-  const onSelect = () => {
-    // TODO
+  const onSelectAll = (selected: boolean = true) => {
+    const newRows = rows.map((r) => ({ ...r, selected }))
+    setRows(newRows)
+    setIsAllSelected(selected)
+  }
+
+  const onSelectPage = (selected: boolean) => {
+    // TODO: when implemented pagination/filtering
+    console.log(selected)
+  }
+
+  const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
+    if (!isSelected && isAllSelected) {
+      setIsAllSelected(false)
+    }
+
+    const newRows = [...rows]
+    const selectedRow = newRows.find((row) => row.key === rowData.key) as IRow
+    selectedRow.selected = isSelected
+
+    setRows(newRows)
   }
 
   const dataToolbarItems = (
@@ -82,7 +106,13 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       <span id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label" hidden>Choose one</span>
       <DataToolbarContent>
         <DataToolbarItem>
-          <DeveloperAccountsCheckboxDropdown />
+          <DeveloperAccountsBulkSelector
+            onSelectAll={onSelectAll}
+            onSelectPage={onSelectPage}
+            isChecked={isAllSelected}
+            pageCount={Math.min(accounts.length, perPage)}
+            allCount={accounts.length}
+          />
         </DataToolbarItem>
         <DataToolbarItem>
           <DeveloperAccountsActionsDropdown />
@@ -93,7 +123,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
           <Pagination
             itemCount={accounts.length}
-            perPage={10}
+            perPage={perPage}
             page={page}
             onSetPage={onSetPage}
           />
@@ -111,7 +141,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         onSort={onSort}
         cells={COLUMNS}
         rows={rows}
-        onSelect={onSelect}
+        onSelect={onSelectOne}
         canSelectAll={false}
       >
         <TableHeader />
@@ -122,7 +152,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
             <Pagination
               itemCount={accounts.length}
-              perPage={10}
+              perPage={perPage}
               page={page}
               onSetPage={onSetPage}
             />

@@ -1,4 +1,4 @@
-export * from './developer-accounts/DeveloperAccountsTable'
+export * from './developer-accounts/index'
 export * from './AppLayout'
 export * from './AppNavExpandable'
 export * from './AppNavGroup'

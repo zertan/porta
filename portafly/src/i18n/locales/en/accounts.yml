@@ -10,11 +10,17 @@ header_buttons:
   export_accounts_description: Title of Export all accounts button
 accounts_table:
   data_toolbar:
-    bulk_dropdown:
-      action_0: Bulk Action 0
-      action_0_description: First bulk action
-      action_1: Bulk Action 1
-      action_1_description: Second bulk action
+    bulk_selector:
+      none: Select none (0 items)
+      none_description: Bulk Selector option for selecting no items
+      page: Select page ({{count}} item)
+      page_description: Bulk Selector option for selecting current page items
+      page_plural: Select page ({{count}} items)
+      page_plural_description: Bulk Selector option for selecting current page items (plural version)
+      all: Select all ({{count}} item)
+      all_description: Bulk Selector option for selecting all available items
+      all_plural: Select all ({{count}} items)
+      all_plural_description: Bulk Selector option for selecting all available items (plural version)
     actions_dropdown:
       title: Actions
       title_description: Title of the Actions dropdown
