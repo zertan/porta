@@ -3,9 +3,12 @@ import {
   Title,
   EmptyState,
   EmptyStateVariant,
-  EmptyStateIcon
+  EmptyStateIcon,
+  Bullseye,
+  EmptyStateBody,
+  Button
 } from '@patternfly/react-core'
-import { CubesIcon } from '@patternfly/react-icons'
+import { CubesIcon, SearchIcon } from '@patternfly/react-icons'
 
 export interface ISimpleEmptyStateProps {
   msg: string
@@ -20,4 +23,26 @@ const SimpleEmptyState: React.FunctionComponent<ISimpleEmptyStateProps> = ({ msg
   </EmptyState>
 )
 
-export { SimpleEmptyState }
+const emptyTableRows = [{
+  heightAuto: true,
+  cells: [{
+    props: { colSpan: 8 },
+    title: (
+      <Bullseye>
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={SearchIcon} />
+          <Title headingLevel="h2" size="lg">
+            No results found
+          </Title>
+          <EmptyStateBody>
+            No results match the filter criteria. Remove all
+            filters or clear all filters to show results.
+          </EmptyStateBody>
+          <Button variant="link">Clear all filters</Button>
+        </EmptyState>
+      </Bullseye>
+    )
+  }]
+}]
+
+export { SimpleEmptyState, emptyTableRows }

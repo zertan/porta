@@ -45,6 +45,6 @@ describe('when there are NO accounts', () => {
   })
 
   it('should render an empty view', () => {
-    expect(wrapper).toMatchSnapshot()
+    expect(wrapper.container.firstChild).toMatchSnapshot()
   })
 })

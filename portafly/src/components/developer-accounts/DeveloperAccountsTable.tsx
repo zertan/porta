@@ -54,6 +54,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   ]
 
   const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
+    // Cells must have the same order as FILTERABLE_COLS
     key: String(a.id),
     cells: [
       a.org_name,
@@ -119,7 +120,18 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     />
   )
 
-  const visibleRows = useMemo(() => rows.slice(pageIdx.startIdx, pageIdx.endIdx), [rows, pageIdx])
+  type Filter = (row: IRow) => boolean
+  const allInFilter: Filter = () => true
+  const [activeFilter, setActiveFilter] = useState(() => allInFilter)
+
+  const visibleRows = useMemo(() => {
+    const res = rows
+      .filter(activeFilter)
+      .slice(pageIdx.startIdx, pageIdx.endIdx)
+
+    // return res.length ? res : emptyTableRows
+    return res
+  }, [rows, activeFilter, pageIdx])
 
   const onSelectPage = (isSelected: boolean) => {
     const newRows = [...initialRows]
@@ -131,6 +143,23 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   }
 
   const selectedCount = rows.reduce((count, row) => count + (row.selected ? 1 : 0), 0)
+
+  const onSearch = (term: string, filterBy: string) => {
+    let newFilter: Filter
+
+    if (term === '') {
+      newFilter = allInFilter
+    } else {
+      const colIndex = FILTERABLE_COLS.indexOf(filterBy)
+      const lowerCaseTerm = term.toLowerCase()
+      newFilter = ({ cells }: IRow) => {
+        const rowValue = (cells as string[])[colIndex].toLowerCase()
+        return rowValue.indexOf(lowerCaseTerm) > -1
+      }
+    }
+
+    setActiveFilter(() => newFilter)
+  }
 
   const dataToolbarItems = (
     <>
@@ -150,7 +179,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           <DeveloperAccountsActionsDropdown />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} />
+          <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} onFilter={onSearch} />
         </DataToolbarItem>
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
           {pagination}

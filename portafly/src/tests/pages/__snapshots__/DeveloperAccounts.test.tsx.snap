@@ -211,7 +211,7 @@ Object {
                       <span
                         class="pf-c-select__toggle-text"
                       >
-                        Choose...
+                        accounts_table.col_group
                       </span>
                     </div>
                     <svg
@@ -236,15 +236,14 @@ Object {
                 >
                   <input
                     aria-invalid="false"
-                    aria-label="search input example"
+                    aria-label="accounts_table.data_toolbar.search_widget.text_input_aria_label"
                     class="pf-c-form-control"
-                    id="textInput1"
-                    name="textInput1"
+                    placeholder="accounts_table.data_toolbar.search_widget.placeholder"
                     type="search"
                     value=""
                   />
                   <button
-                    aria-label="search button for search input"
+                    aria-label="accounts_table.data_toolbar.search_widget.button_aria_label"
                     class="pf-c-button pf-m-control"
                     type="button"
                   >
@@ -1179,7 +1178,7 @@ Object {
                     <span
                       class="pf-c-select__toggle-text"
                     >
-                      Choose...
+                      accounts_table.col_group
                     </span>
                   </div>
                   <svg
@@ -1204,15 +1203,14 @@ Object {
               >
                 <input
                   aria-invalid="false"
-                  aria-label="search input example"
+                  aria-label="accounts_table.data_toolbar.search_widget.text_input_aria_label"
                   class="pf-c-form-control"
-                  id="textInput1"
-                  name="textInput1"
+                  placeholder="accounts_table.data_toolbar.search_widget.placeholder"
                   type="search"
                   value=""
                 />
                 <button
-                  aria-label="search button for search input"
+                  aria-label="accounts_table.data_toolbar.search_widget.button_aria_label"
                   class="pf-c-button pf-m-control"
                   type="button"
                 >

@@ -30,6 +30,15 @@ accounts_table:
       action_0_description: First action
       action_1: Action 1
       action_1_description: Second action
+    search_widget:
+      select_aria_label: Filter-by select
+      select_aria_label_description: Aria label of the dropdown for filtering
+      text_input_aria_label: Filter term input
+      text_input_aria_label_description: Aria label of the text input for filtering
+      button_aria_label: Search button for input
+      button_aria_label_description: Aria label of the button to filter
+      placeholder: Filter by {{option}}
+      placeholder_description: Placeholder for the text input
   aria_label: Accounts list
   aria_label_description: Aria label of the Accounts table component
   empty_state: There are no accounts
