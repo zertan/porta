@@ -155,6 +155,7 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
             id="pf-toggle-id-0"
             type="button"
           >
+            
             <svg
               aria-hidden="true"
               class=""

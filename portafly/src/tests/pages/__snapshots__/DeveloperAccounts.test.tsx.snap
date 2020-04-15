@@ -114,6 +114,7 @@ Object {
                     id="pf-toggle-id-0"
                     type="button"
                   >
+                    
                     <svg
                       aria-hidden="true"
                       class=""
@@ -1081,6 +1082,7 @@ Object {
                   id="pf-toggle-id-0"
                   type="button"
                 >
+                  
                   <svg
                     aria-hidden="true"
                     class=""

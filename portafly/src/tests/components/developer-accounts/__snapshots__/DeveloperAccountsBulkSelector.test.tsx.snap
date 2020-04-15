@@ -29,6 +29,7 @@ exports[`when it is checked should render properly 1`] = `
       id="pf-toggle-id-3"
       type="button"
     >
+      
       <svg
         aria-hidden="true"
         class=""
@@ -77,6 +78,7 @@ exports[`when it is unchecked should render properly 1`] = `
       id="pf-toggle-id-4"
       type="button"
     >
+      
       <svg
         aria-hidden="true"
         class=""

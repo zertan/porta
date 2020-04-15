@@ -12,11 +12,12 @@ type IBulkSelector = {
   onSelectAll: (selected: boolean) => void
   onSelectPage: (selected: boolean) => void
   pageCount: number,
-  allCount: number
+  allCount: number,
+  selectedCount: number
 }
 
 const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
-  isChecked, onSelectAll, onSelectPage, pageCount, allCount
+  isChecked, onSelectAll, onSelectPage, pageCount, allCount, selectedCount
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -57,7 +58,9 @@ const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
               aria-label="Select all"
             />
           ]}
-        />
+        >
+          {selectedCount > 0 ? t('accounts_table.data_toolbar.bulk_selector.label', { selectedCount }) : ''}
+        </DropdownToggle>
       )}
     />
   )

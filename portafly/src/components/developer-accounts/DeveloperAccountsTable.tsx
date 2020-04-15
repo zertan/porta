@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Table,
   TableHeader,
@@ -14,7 +14,8 @@ import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
 import {
   Pagination,
-  OnSetPage
+  OnSetPage,
+  OnPerPageSelect
 } from '@patternfly/react-core'
 import {
   DataToolbar,
@@ -37,8 +38,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   }
 
   const [sortBy, setSortBy] = useState({})
-  const [page, setPage] = useState(0)
-  const perPage = 10
   const [isAllSelected, setIsAllSelected] = useState(false)
 
   const FILTERABLE_COLS = [
@@ -54,8 +53,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     t('accounts_table.col_actions')
   ]
 
-  const initialRows: IRow[] = accounts.map((a) => ({
-    key: a.id,
+  const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
+    key: String(a.id),
     cells: [
       a.org_name,
       a.admin_name,
@@ -73,20 +72,10 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setSortBy({})
   }
 
-  const onSetPage: OnSetPage = (_ev, newPage) => {
-    // TODO
-    setPage(newPage)
-  }
-
   const onSelectAll = (selected: boolean = true) => {
     const newRows = rows.map((r) => ({ ...r, selected }))
     setRows(newRows)
     setIsAllSelected(selected)
-  }
-
-  const onSelectPage = (selected: boolean) => {
-    // TODO: when implemented pagination/filtering
-    console.log(selected)
   }
 
   const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
@@ -101,6 +90,48 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
+  const perPageOptions = [
+    { title: '5', value: 5 },
+    { title: '20', value: 20 },
+    { title: '50', value: 50 }
+  ]
+  const [page, setPage] = useState(0)
+  const [perPage, setPerPage] = useState(perPageOptions[0].value)
+  const [pageIdx, setPageIdx] = useState({ startIdx: 0, endIdx: perPageOptions[0].value })
+  const onSetPage: OnSetPage = (ev, newPage, _perPage, startIdx, endIdx) => {
+    setPage(newPage)
+    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
+  }
+
+  const onPerPageSelect: OnPerPageSelect = (ev, newPerPage, newPage, startIdx, endIdx) => {
+    setPerPage(newPerPage)
+    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
+  }
+
+  const pagination = (
+    <Pagination
+      itemCount={accounts.length}
+      perPage={perPage}
+      page={page}
+      onSetPage={onSetPage}
+      onPerPageSelect={onPerPageSelect}
+      perPageOptions={perPageOptions}
+    />
+  )
+
+  const visibleRows = useMemo(() => rows.slice(pageIdx.startIdx, pageIdx.endIdx), [rows, pageIdx])
+
+  const onSelectPage = (isSelected: boolean) => {
+    const newRows = [...initialRows]
+    visibleRows.forEach((vR) => {
+      const selectedRow = newRows.find((nR) => vR.key === nR.key) as IRow
+      selectedRow.selected = isSelected
+    })
+    setRows(newRows)
+  }
+
+  const selectedCount = rows.reduce((count, row) => count + (row.selected ? 1 : 0), 0)
+
   const dataToolbarItems = (
     <>
       <span id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label" hidden>Choose one</span>
@@ -112,6 +143,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
             isChecked={isAllSelected}
             pageCount={Math.min(accounts.length, perPage)}
             allCount={accounts.length}
+            selectedCount={selectedCount}
           />
         </DataToolbarItem>
         <DataToolbarItem>
@@ -121,12 +153,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} />
         </DataToolbarItem>
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
-          <Pagination
-            itemCount={accounts.length}
-            perPage={perPage}
-            page={page}
-            onSetPage={onSetPage}
-          />
+          {pagination}
         </DataToolbarItem>
       </DataToolbarContent>
     </>
@@ -140,7 +167,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         sortBy={sortBy}
         onSort={onSort}
         cells={COLUMNS}
-        rows={rows}
+        rows={visibleRows}
         onSelect={onSelectOne}
         canSelectAll={false}
       >
@@ -150,12 +177,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       <DataToolbar id="footer">
         <DataToolbarContent>
           <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
-            <Pagination
-              itemCount={accounts.length}
-              perPage={perPage}
-              page={page}
-              onSetPage={onSetPage}
-            />
+            {pagination}
           </DataToolbarItem>
         </DataToolbarContent>
       </DataToolbar>
