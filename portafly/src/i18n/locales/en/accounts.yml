@@ -63,3 +63,21 @@ accounts_table:
   col_state_description: Title of the State column
   col_actions: Actions
   col_actions_description: Title of Actions column
+modals:
+  send_email:
+    title: Send email to admins of selected accounts
+    to: To
+    subject: Subject
+    message: Message
+    send: Send
+    cancel: Cancel
+  change_plan:
+    title: Change plan for the selected accounts
+    to: Selected accounts
+    send: Change plan
+    cancel: Cancel
+  change_status:
+    title: Change status for the selected accounts
+    to: Selected accounts
+    send: Change state
+    cancel: Cancel

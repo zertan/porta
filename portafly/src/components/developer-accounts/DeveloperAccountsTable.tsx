@@ -9,7 +9,13 @@ import {
   IRow,
   OnSelect
 } from '@patternfly/react-table'
-import { SimpleEmptyState, CreateTableEmptyState } from 'components'
+import {
+  SimpleEmptyState,
+  CreateTableEmptyState,
+  DeveloperAccountsBulkSelector,
+  DeveloperAccountsSearchWidget,
+  DeveloperAccountsActionsDropdown
+} from 'components'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
 import {
@@ -23,9 +29,9 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
-import { DeveloperAccountsActionsDropdown } from './DeveloperAccountsActionsDropdown'
-import { DeveloperAccountsBulkSelector } from './DeveloperAccountsBulkSelector'
-import { DeveloperAccountsSearchWidget } from './DeveloperAccountsSearchWidget'
+import { SendEmailModal } from './SendEmailModal'
+import { ChangePlanModal } from './ChangePlanModal'
+import { ChangeStatusModal } from './ChangeStatusModal'
 
 export interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
@@ -39,6 +45,9 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   }
 
   const [sortBy, setSortBy] = useState({})
+  const [isSendEmailModalOpen, setIsSendEmailModalOpen] = useState(false)
+  const [isChangePlanModalOpen, setIsChangePlanModalOpen] = useState(false)
+  const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false)
 
   const FILTERABLE_COLS = [
     t('accounts_table.col_group'),
@@ -75,6 +84,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
   type Filter = (row: IRow) => boolean
   const allInFilter: Filter = () => true
+  const selectedFilter: Filter = (r) => r.selected as boolean
   const [activeFilter, setActiveFilter] = useState(() => allInFilter)
 
   const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
@@ -149,19 +159,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
-  const selectedCount = rows.reduce((count, row) => count + (row.selected ? 1 : 0), 0)
-
-  // const isBulkSelectorChecked = useMemo(() => {
-  //   if (selectedCount === 0) {
-  //     return false
-  //   }
-
-  //   if (selectedCount >= filteredRows.length) {
-  //     return true // FIXME: won't be valid when filtered and selected does not coincide
-  //   }
-
-  //   return false
-  // }, [selectedCount])
+  const selectedRows = rows.filter(selectedFilter)
+  const selectedCount = selectedRows.length
 
   const onSearch = (term: string, filterBy: string) => {
     let newFilter: Filter
@@ -178,6 +177,23 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     }
 
     setActiveFilter(() => newFilter)
+  }
+
+  const onModalActionSelected = (action: 'email' | 'plan' | 'status') => {
+    // eslint-disable-next-line default-case
+    switch (action) {
+      case 'email':
+        setIsSendEmailModalOpen(true)
+        break
+
+      case 'plan':
+        setIsChangePlanModalOpen(true)
+        break
+
+      case 'status':
+        setIsChangeStatusModalOpen(true)
+        break
+    }
   }
 
   const clearFilters = () => setActiveFilter(() => allInFilter)
@@ -204,7 +220,10 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsActionsDropdown isDisabled={selectedCount === 0} />
+          <DeveloperAccountsActionsDropdown
+            isDisabled={selectedCount === 0}
+            onAction={onModalActionSelected}
+          />
         </DataToolbarItem>
         <DataToolbarItem>
           <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} onFilter={onSearch} />
@@ -238,6 +257,27 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           </DataToolbarItem>
         </DataToolbarContent>
       </DataToolbar>
+
+      <SendEmailModal
+        isOpen={isSendEmailModalOpen}
+        admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
+        onClose={() => setIsSendEmailModalOpen(false)}
+        onSend={() => {}}
+      />
+
+      <ChangePlanModal
+        isOpen={isChangePlanModalOpen}
+        admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
+        onClose={() => setIsChangePlanModalOpen(false)}
+        onSend={() => {}}
+      />
+
+      <ChangeStatusModal
+        isOpen={isChangeStatusModalOpen}
+        admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
+        onClose={() => setIsChangeStatusModalOpen(false)}
+        onSend={() => {}}
+      />
     </>
   )
 }
