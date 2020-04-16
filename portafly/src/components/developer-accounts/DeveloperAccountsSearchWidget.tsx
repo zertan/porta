@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   SelectOption,
   Select,
@@ -23,10 +23,20 @@ const Search: React.FunctionComponent<ISearch> = ({ options, onFilter }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [filterBy, setFilterBy] = useState(options[0])
   const [term, setTerm] = useState('')
+  const textInputRef = useRef<HTMLInputElement>(null)
 
   const onSelect = (_: any, value: string | SelectOptionObject) => {
     setFilterBy(value as string)
     setIsExpanded(!isExpanded)
+
+    const input = textInputRef.current as HTMLInputElement
+    input.focus()
+  }
+
+  const onKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onFilter(term, filterBy)
+    }
   }
 
   return (
@@ -46,11 +56,13 @@ const Search: React.FunctionComponent<ISearch> = ({ options, onFilter }) => {
       </Select>
       <InputGroup>
         <TextInput
+          ref={textInputRef}
           type="search"
           aria-label={t('accounts_table.data_toolbar.search_widget.text_input_aria_label')}
           placeholder={t('accounts_table.data_toolbar.search_widget.placeholder', { option: filterBy.toLowerCase() })}
           value={term}
           onChange={setTerm}
+          onKeyUp={onKeyUp}
         />
         <Button
           variant={ButtonVariant.control}
