@@ -29,13 +29,15 @@ accounts_table:
       all_plural_description: Bulk Selector option for selecting all available items (plural version)
       label: "{{selectedCount}} selected"
       label_description: Label indicating how many items are currently selected
-    actions_dropdown:
+    bulk_actions:
       title: Actions
       title_description: Title of the Actions dropdown
-      action_0: Action 0
-      action_0_description: First action
-      action_1: Action 1
-      action_1_description: Second action
+      send_email: Send email
+      send_email_description: Bulk action for Send main
+      change_plan: Change account plan
+      change_plan_description: Bulk action for Change plan
+      change_status: Change state
+      change_status_description: Bulk action for Change status
     search_widget:
       select_aria_label: Filter-by select
       select_aria_label_description: Aria label of the dropdown for filtering

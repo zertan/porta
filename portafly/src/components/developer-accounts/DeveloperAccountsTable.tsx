@@ -204,7 +204,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsActionsDropdown />
+          <DeveloperAccountsActionsDropdown isDisabled={selectedCount === 0} />
         </DataToolbarItem>
         <DataToolbarItem>
           <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} onFilter={onSearch} />

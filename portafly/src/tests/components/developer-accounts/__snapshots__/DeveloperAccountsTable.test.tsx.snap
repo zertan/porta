@@ -101,13 +101,13 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
           aria-expanded="false"
           aria-haspopup="true"
           class="pf-c-dropdown__toggle pf-m-primary"
-          id="toggle-id-4"
+          id="pf-toggle-id-1"
           type="button"
         >
           <span
             class="pf-c-dropdown__toggle-text"
           >
-            accounts_table.data_toolbar.actions_dropdown.title
+            accounts_table.data_toolbar.bulk_actions.title
           </span>
           <svg
             aria-hidden="true"

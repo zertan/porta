@@ -8,19 +8,26 @@ import { CaretDownIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 
 type IActionsDropdown = {
-
+  isDisabled: boolean
 }
 
-const ID_DROPDOWN = 'toggle-id-4'
-
-const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = () => {
+const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({ isDisabled }) => {
   const { t } = useTranslation('accounts')
+
   const [isOpen, setIsOpen] = useState(false)
 
-  const onFocus = () => document.getElementById(ID_DROPDOWN)?.focus()
-  const onSelect = () => {
-    setIsOpen(!isOpen)
-    onFocus()
+  const onSelect = () => setIsOpen(!isOpen)
+
+  const onSendEmail = () => {
+    // TODO
+  }
+
+  const onChangePlan = () => {
+    // TODO
+  }
+
+  const onChangeStatus = () => {
+    // TODO
   }
 
   const toggle = (
@@ -28,15 +35,16 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = () => {
       onToggle={setIsOpen}
       iconComponent={CaretDownIcon}
       isPrimary
-      id={ID_DROPDOWN}
+      isDisabled={isDisabled}
     >
-      {t('accounts_table.data_toolbar.actions_dropdown.title')}
+      {t('accounts_table.data_toolbar.bulk_actions.title')}
     </DropdownToggle>
   )
 
   const dropdownItems = [
-    <DropdownItem key="action" component="button">{t('accounts_table.data_toolbar.actions_dropdown.action_0')}</DropdownItem>,
-    <DropdownItem key="action" component="button">{t('accounts_table.data_toolbar.actions_dropdown.action_1')}</DropdownItem>
+    <DropdownItem key="send_email" component="button" onClick={onSendEmail}>{t('accounts_table.data_toolbar.bulk_actions.send_email')}</DropdownItem>,
+    <DropdownItem key="change_plan" component="button" onClick={onChangePlan}>{t('accounts_table.data_toolbar.bulk_actions.change_plan')}</DropdownItem>,
+    <DropdownItem key="change_status" component="button" onClick={onChangeStatus}>{t('accounts_table.data_toolbar.bulk_actions.change_status')}</DropdownItem>
   ]
 
   return (
