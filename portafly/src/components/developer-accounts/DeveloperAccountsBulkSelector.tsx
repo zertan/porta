@@ -8,7 +8,6 @@ import {
 import { useTranslation } from 'i18n/useTranslation'
 
 type IBulkSelector = {
-  isChecked?: boolean
   onSelectAll: (selected: boolean) => void
   onSelectPage: (selected: boolean) => void
   pageCount: number,
@@ -17,7 +16,7 @@ type IBulkSelector = {
 }
 
 const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
-  isChecked, onSelectAll, onSelectPage, pageCount, allCount, selectedCount
+  onSelectAll, onSelectPage, pageCount, allCount, selectedCount
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -26,6 +25,15 @@ const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
   const onSelect = () => {
     setIsOpen((current) => !current)
   }
+
+  const onClick = () => {
+    onSelectAll(selectedCount === 0)
+  }
+
+  // FIXME: null does not work as indeterminate state for DropdownToggleCheckbox (bug?)
+  // Also setting isChecked null creates an error in the console for uncontrolled
+  // React prop
+  const isChecked = allCount > 0 && selectedCount === allCount
 
   const dropdownItems = [
     <DropdownItem key="0" component="button" onClick={() => onSelectAll(false)}>
@@ -53,7 +61,7 @@ const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
               data-testid="developer-accounts-bulk-checkbox"
               id="developer-accounts-bulk-checkbox"
               isChecked={isChecked}
-              onChange={onSelectAll}
+              onClick={onClick}
               key="split-checkbox"
               aria-label="Select all"
             />

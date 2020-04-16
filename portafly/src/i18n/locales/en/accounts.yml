@@ -9,6 +9,12 @@ header_buttons:
   export_accounts: Export all accounts
   export_accounts_description: Title of Export all accounts button
 accounts_table:
+  empty_state_title: No results found
+  empty_state_title_description: Title of the empty state of accounts table
+  empty_state_body: No results match the filter criteria. Remove all filters or clear all filters to show results.
+  empty_state_body_description: Body message of the empty state of accounts table
+  empty_state_button: Clear all filters
+  empty_state_button_description: Clear filters button of the empty state of accounts table
   data_toolbar:
     bulk_selector:
       none: Select none (0 items)

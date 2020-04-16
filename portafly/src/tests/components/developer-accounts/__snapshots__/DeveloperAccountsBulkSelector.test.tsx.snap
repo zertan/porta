@@ -15,7 +15,6 @@ exports[`when it is checked should render properly 1`] = `
       <input
         aria-invalid="false"
         aria-label="Select all"
-        checked=""
         data-testid="developer-accounts-bulk-checkbox"
         id="developer-accounts-bulk-checkbox"
         type="checkbox"

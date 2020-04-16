@@ -9,13 +9,14 @@ import {
   IRow,
   OnSelect
 } from '@patternfly/react-table'
-import { SimpleEmptyState } from 'components'
+import { SimpleEmptyState, CreateTableEmptyState } from 'components'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
 import {
   Pagination,
   OnSetPage,
-  OnPerPageSelect
+  OnPerPageSelect,
+  Button
 } from '@patternfly/react-core'
 import {
   DataToolbar,
@@ -38,7 +39,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   }
 
   const [sortBy, setSortBy] = useState({})
-  const [isAllSelected, setIsAllSelected] = useState(false)
 
   const FILTERABLE_COLS = [
     t('accounts_table.col_group'),
@@ -73,17 +73,32 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setSortBy({})
   }
 
+  type Filter = (row: IRow) => boolean
+  const allInFilter: Filter = () => true
+  const [activeFilter, setActiveFilter] = useState(() => allInFilter)
+
+  const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
+
   const onSelectAll = (selected: boolean = true) => {
-    const newRows = rows.map((r) => ({ ...r, selected }))
+    let newRows: (typeof initialRows)
+
+    if (!selected) {
+      newRows = [...initialRows]
+    } else if (filteredRows.length === initialRows.length) {
+      newRows = initialRows.map((nR) => ({ ...nR, selected: true }))
+    } else {
+      newRows = [...initialRows]
+      filteredRows.forEach((fR) => {
+        const selectedRow = newRows.find((nR) => fR.key === nR.key) as IRow
+        selectedRow.selected = true
+      })
+      setRows(newRows)
+    }
+
     setRows(newRows)
-    setIsAllSelected(selected)
   }
 
   const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
-    if (!isSelected && isAllSelected) {
-      setIsAllSelected(false)
-    }
-
     const newRows = [...rows]
     const selectedRow = newRows.find((row) => row.key === rowData.key) as IRow
     selectedRow.selected = isSelected
@@ -111,7 +126,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
   const pagination = (
     <Pagination
-      itemCount={accounts.length}
+      itemCount={filteredRows.length}
       perPage={perPage}
       page={page}
       onSetPage={onSetPage}
@@ -120,18 +135,10 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     />
   )
 
-  type Filter = (row: IRow) => boolean
-  const allInFilter: Filter = () => true
-  const [activeFilter, setActiveFilter] = useState(() => allInFilter)
-
-  const visibleRows = useMemo(() => {
-    const res = rows
-      .filter(activeFilter)
-      .slice(pageIdx.startIdx, pageIdx.endIdx)
-
-    // return res.length ? res : emptyTableRows
-    return res
-  }, [rows, activeFilter, pageIdx])
+  const visibleRows = useMemo(
+    () => filteredRows.slice(pageIdx.startIdx, pageIdx.endIdx),
+    [rows, activeFilter, pageIdx]
+  )
 
   const onSelectPage = (isSelected: boolean) => {
     const newRows = [...initialRows]
@@ -144,6 +151,18 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
   const selectedCount = rows.reduce((count, row) => count + (row.selected ? 1 : 0), 0)
 
+  // const isBulkSelectorChecked = useMemo(() => {
+  //   if (selectedCount === 0) {
+  //     return false
+  //   }
+
+  //   if (selectedCount >= filteredRows.length) {
+  //     return true // FIXME: won't be valid when filtered and selected does not coincide
+  //   }
+
+  //   return false
+  // }, [selectedCount])
+
   const onSearch = (term: string, filterBy: string) => {
     let newFilter: Filter
 
@@ -151,15 +170,25 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       newFilter = allInFilter
     } else {
       const colIndex = FILTERABLE_COLS.indexOf(filterBy)
-      const lowerCaseTerm = term.toLowerCase()
+      const lowerCaseTerms = term.toLocaleLowerCase().trim().split(' ')
       newFilter = ({ cells }: IRow) => {
         const rowValue = (cells as string[])[colIndex].toLowerCase()
-        return rowValue.indexOf(lowerCaseTerm) > -1
+        return lowerCaseTerms.some((lct) => rowValue.indexOf(lct) > -1)
       }
     }
 
     setActiveFilter(() => newFilter)
   }
+
+  const clearFilters = () => setActiveFilter(() => allInFilter)
+
+  const tableEmptyStateRow = useMemo(() => CreateTableEmptyState(
+    t('accounts_table.empty_state_title'),
+    t('accounts_table.empty_state_body'),
+    <Button variant="link" onClick={clearFilters}>
+      {t('accounts_table.empty_state_button')}
+    </Button>
+  ), [t])
 
   const dataToolbarItems = (
     <>
@@ -169,9 +198,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           <DeveloperAccountsBulkSelector
             onSelectAll={onSelectAll}
             onSelectPage={onSelectPage}
-            isChecked={isAllSelected}
-            pageCount={Math.min(accounts.length, perPage)}
-            allCount={accounts.length}
+            pageCount={visibleRows.length}
+            allCount={filteredRows.length}
             selectedCount={selectedCount}
           />
         </DataToolbarItem>
@@ -196,8 +224,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         sortBy={sortBy}
         onSort={onSort}
         cells={COLUMNS}
-        rows={visibleRows}
-        onSelect={onSelectOne}
+        rows={visibleRows.length ? visibleRows : tableEmptyStateRow}
+        onSelect={visibleRows.length ? onSelectOne : undefined}
         canSelectAll={false}
       >
         <TableHeader />
