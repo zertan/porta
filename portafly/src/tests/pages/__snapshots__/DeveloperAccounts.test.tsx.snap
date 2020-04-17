@@ -75,12 +75,6 @@ Object {
           class="pf-c-data-toolbar"
           id="accounts-toolbar-top"
         >
-          <span
-            hidden=""
-            id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label"
-          >
-            Choose one
-          </span>
           <div
             class="pf-c-data-toolbar__content"
           >
@@ -144,6 +138,7 @@ Object {
                   aria-expanded="false"
                   aria-haspopup="true"
                   class="pf-c-dropdown__toggle pf-m-primary"
+                  disabled=""
                   id="pf-toggle-id-1"
                   type="button"
                 >
@@ -701,7 +696,14 @@ Object {
                 class=""
                 data-key="6"
                 data-label="accounts_table.col_actions"
-              />
+              >
+                <button
+                  class="pf-c-button pf-m-link"
+                  type="button"
+                >
+                  Impersonate
+                </button>
+              </td>
             </tr>
             <tr
               class=""
@@ -755,7 +757,14 @@ Object {
                 class=""
                 data-key="6"
                 data-label="accounts_table.col_actions"
-              />
+              >
+                <button
+                  class="pf-c-button pf-m-link"
+                  type="button"
+                >
+                  Impersonate
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -970,6 +979,9 @@ Object {
         </div>
       </section>
     </div>
+    <div />
+    <div />
+    <div />
   </body>,
   "container": <div>
     <section
@@ -1042,12 +1054,6 @@ Object {
         class="pf-c-data-toolbar"
         id="accounts-toolbar-top"
       >
-        <span
-          hidden=""
-          id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label"
-        >
-          Choose one
-        </span>
         <div
           class="pf-c-data-toolbar__content"
         >
@@ -1111,6 +1117,7 @@ Object {
                 aria-expanded="false"
                 aria-haspopup="true"
                 class="pf-c-dropdown__toggle pf-m-primary"
+                disabled=""
                 id="pf-toggle-id-1"
                 type="button"
               >
@@ -1668,7 +1675,14 @@ Object {
               class=""
               data-key="6"
               data-label="accounts_table.col_actions"
-            />
+            >
+              <button
+                class="pf-c-button pf-m-link"
+                type="button"
+              >
+                Impersonate
+              </button>
+            </td>
           </tr>
           <tr
             class=""
@@ -1722,7 +1736,14 @@ Object {
               class=""
               data-key="6"
               data-label="accounts_table.col_actions"
-            />
+            >
+              <button
+                class="pf-c-button pf-m-link"
+                type="button"
+              >
+                Impersonate
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

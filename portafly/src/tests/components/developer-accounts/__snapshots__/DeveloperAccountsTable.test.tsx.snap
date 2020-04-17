@@ -32,12 +32,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
   class="pf-c-data-toolbar"
   id="accounts-toolbar-top"
 >
-  <span
-    hidden=""
-    id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label"
-  >
-    Choose one
-  </span>
   <div
     class="pf-c-data-toolbar__content"
   >
@@ -101,6 +95,7 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
           aria-expanded="false"
           aria-haspopup="true"
           class="pf-c-dropdown__toggle pf-m-primary"
+          disabled=""
           id="pf-toggle-id-1"
           type="button"
         >

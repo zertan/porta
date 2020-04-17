@@ -39,7 +39,7 @@ exports[`should render properly 1`] = `
         <span
           class="pf-c-select__toggle-text"
         >
-          Organization
+          accounts_table.col_group
         </span>
       </div>
       <svg

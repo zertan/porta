@@ -37,6 +37,21 @@ describe('when there are any accounts', () => {
     fireEvent.click(checkbox)
     expect(checkboxes.filter(isChecked).length).toEqual(0)
   })
+
+  it('should remove all selection when clicking the checkbox twice', () => {
+    const row = wrapper.getByText(developerAccounts[0].org_name).closest('tr') as HTMLElement
+    const rowCheckbox = within(row).getByRole('checkbox') as HTMLInputElement
+    fireEvent.click(rowCheckbox)
+
+    const checkboxes = wrapper.getAllByRole('checkbox')
+    const isChecked = (c: HTMLElement) => (c as HTMLInputElement).checked
+    expect(checkboxes.filter(isChecked).length).toEqual(1)
+
+    const bulkSelectorCheckbox = wrapper.getByTestId('developer-accounts-bulk-checkbox')
+    fireEvent.click(bulkSelectorCheckbox)
+
+    expect(checkboxes.filter(isChecked).length).toEqual(0)
+  })
 })
 
 describe('when there are NO accounts', () => {

@@ -4,12 +4,10 @@ import { render } from 'tests/custom-render'
 import { DeveloperAccountsSearchWidget } from 'components'
 import { RenderResult, fireEvent } from '@testing-library/react'
 
-const filterOptions = ['Organization', 'Name', 'State']
-
 let wrapper: RenderResult
 
 beforeEach(() => {
-  wrapper = render(<DeveloperAccountsSearchWidget options={filterOptions} />)
+  wrapper = render(<DeveloperAccountsSearchWidget onFilter={jest.fn()} />)
 })
 
 it('should render properly', () => {
@@ -17,21 +15,21 @@ it('should render properly', () => {
 })
 
 it('should have the first filter selected by default', () => {
-  const targetOption = /organization/i
+  const targetOption = 'accounts_table.col_group'
   expect(wrapper.getByText(targetOption)).toBeInTheDocument()
   // FIXME: need to mock i18n or remove this assertion
-  // expect(wrapper.getByPlaceholderText(targetOption)).toBeInTheDocument()
+  // expect(wrapper.getByPlaceholderText('Filter by org')).toBeInTheDocument()
 })
 
 it('should be able to select any filter option', () => {
-  const targetOption = /name/i
+  const targetOption = 'accounts_table.col_admin'
   expect(wrapper.queryAllByText(targetOption).length).toEqual(0)
 
-  const dropdownButton = wrapper.getByText(filterOptions[0]).closest('button')
+  const dropdownButton = wrapper.getByText('accounts_table.col_group').closest('button')
   fireEvent.click(dropdownButton as HTMLButtonElement)
   fireEvent.click(wrapper.getByText(targetOption))
 
   expect(wrapper.getByText(targetOption)).toBeInTheDocument()
   // FIXME: need to mock i18n or remove this assertion
-  // expect(wrapper.getByPlaceholderText(targetOption)).toBeInTheDocument()
+  // expect(wrapper.getByPlaceholderText('Filter by admin')).toBeInTheDocument()
 })

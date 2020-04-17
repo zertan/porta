@@ -3,22 +3,18 @@ import React from 'react'
 
 import { render } from 'tests/custom-render'
 import { DeveloperAccountsBulkSelector } from 'components'
-import { RenderResult, fireEvent, within } from '@testing-library/react'
+import { fireEvent, within } from '@testing-library/react'
 
-function renderWrapper(props?: any): RenderResult {
-  return render(
-    <DeveloperAccountsBulkSelector
-      onSelectAll={jest.fn()}
-      onSelectPage={jest.fn()}
-      pageCount={10}
-      allCount={25}
-      {...props}
-    />
-  )
+const defaultProps = {
+  onSelectAll: jest.fn(),
+  onSelectPage: jest.fn(),
+  pageCount: 10,
+  allCount: 20,
+  selectedCount: 0
 }
 
 it('expands and collapses properly', () => {
-  const wrapper = renderWrapper()
+  const wrapper = render(<DeveloperAccountsBulkSelector {...defaultProps} />)
   expect(wrapper.queryByRole('menu')).not.toBeInTheDocument()
 
   const button = wrapper.getByRole('button')
@@ -33,26 +29,17 @@ it('expands and collapses properly', () => {
   expect(wrapper.queryByRole('menu')).not.toBeInTheDocument()
 })
 
-describe('when it is checked', () => {
-  let wrapper: RenderResult
-
-  beforeEach(() => {
-    wrapper = renderWrapper({ isChecked: true })
-  })
-
-  it('should render properly', () => {
-    expect(wrapper.container.firstChild).toMatchSnapshot()
-  })
+it('should render properly when all are selected', () => {
+  const wrapper = render(<DeveloperAccountsBulkSelector {...defaultProps} selectedCount={20} />)
+  expect(wrapper.container.firstChild).toMatchSnapshot()
 })
 
-describe('when it is unchecked', () => {
-  let wrapper: RenderResult
+it('should render properly when some are selected', () => {
+  const wrapper = render(<DeveloperAccountsBulkSelector {...defaultProps} selectedCount={5} />)
+  expect(wrapper.container.firstChild).toMatchSnapshot()
+})
 
-  beforeEach(() => {
-    wrapper = renderWrapper({ isChecked: false })
-  })
-
-  it('should render properly', () => {
-    expect(wrapper.container.firstChild).toMatchSnapshot()
-  })
+it('should render properly when none are selected', () => {
+  const wrapper = render(<DeveloperAccountsBulkSelector {...defaultProps} />)
+  expect(wrapper.container.firstChild).toMatchSnapshot()
 })
