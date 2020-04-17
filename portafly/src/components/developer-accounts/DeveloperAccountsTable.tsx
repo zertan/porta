@@ -4,7 +4,6 @@ import {
   TableHeader,
   TableBody,
   sortable,
-  OnSort,
   ICell,
   IRow,
   OnSelect
@@ -14,16 +13,12 @@ import {
   CreateTableEmptyState,
   DeveloperAccountsBulkSelector,
   DeveloperAccountsSearchWidget,
-  DeveloperAccountsActionsDropdown
+  DeveloperAccountsActionsDropdown,
+  DeveloperAccountsPagination
 } from 'components'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
-import {
-  Pagination,
-  OnSetPage,
-  OnPerPageSelect,
-  Button
-} from '@patternfly/react-core'
+import { Button } from '@patternfly/react-core'
 import {
   DataToolbar,
   DataToolbarItem,
@@ -33,7 +28,7 @@ import { SendEmailModal } from './SendEmailModal'
 import { ChangePlanModal } from './ChangePlanModal'
 import { ChangeStatusModal } from './ChangeStatusModal'
 
-export interface IDeveloperAccountsTable {
+interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
 }
 
@@ -44,47 +39,58 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     return <SimpleEmptyState msg={t('accounts_table.empty_state')} />
   }
 
-  const [sortBy, setSortBy] = useState({})
   const [isSendEmailModalOpen, setIsSendEmailModalOpen] = useState(false)
   const [isChangePlanModalOpen, setIsChangePlanModalOpen] = useState(false)
   const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false)
 
-  const FILTERABLE_COLS = [
-    t('accounts_table.col_group'),
-    t('accounts_table.col_admin'),
-    t('accounts_table.col_signup'),
-    t('accounts_table.col_apps'),
-    t('accounts_table.col_state')
-  ]
-
-  const COLUMNS: ICell[] = [
-    ...FILTERABLE_COLS.map((c) => ({ title: c, transforms: [sortable] })),
-    t('accounts_table.col_actions')
+  const columns: ICell[] = [
+    {
+      title: t('accounts_table.col_group'),
+      transforms: [sortable]
+    },
+    {
+      title: t('accounts_table.col_admin'),
+      transforms: [sortable]
+    },
+    {
+      title: t('accounts_table.col_signup'),
+      transforms: [sortable]
+    },
+    {
+      title: t('accounts_table.col_apps'),
+      transforms: [sortable]
+    },
+    {
+      title: t('accounts_table.col_state'),
+      transforms: [sortable]
+    },
+    {
+      title: t('accounts_table.col_actions')
+    }
   ]
 
   const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
-    // Cells must have the same order as FILTERABLE_COLS
     key: String(a.id),
+    // Order of cells must match the columns
     cells: [
       a.org_name,
       a.admin_name,
       a.created_at,
       a.apps_count.toString(),
       a.state,
-      ''
+      {
+        // TODO: implement this button
+        title: <Button variant="link">Impersonate</Button>
+      }
     ],
     selected: false
   }))
-  const [rows, setRows] = useState(initialRows)
 
-  const onSort: OnSort = () => {
-    // TODO
-    setSortBy({})
-  }
+  const [rows, setRows] = useState(initialRows)
 
   type Filter = (row: IRow) => boolean
   const allInFilter: Filter = () => true
-  const selectedFilter: Filter = (r) => r.selected as boolean
+  const allSelectedFilter: Filter = (r) => (r.selected as boolean)
   const [activeFilter, setActiveFilter] = useState(() => allInFilter)
 
   const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
@@ -116,33 +122,10 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
-  const perPageOptions = [
-    { title: '5', value: 5 },
-    { title: '20', value: 20 },
-    { title: '50', value: 50 }
-  ]
-  const [page, setPage] = useState(0)
-  const [perPage, setPerPage] = useState(perPageOptions[0].value)
-  const [pageIdx, setPageIdx] = useState({ startIdx: 0, endIdx: perPageOptions[0].value })
-  const onSetPage: OnSetPage = (ev, newPage, _perPage, startIdx, endIdx) => {
-    setPage(newPage)
-    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
-  }
-
-  const onPerPageSelect: OnPerPageSelect = (ev, newPerPage, newPage, startIdx, endIdx) => {
-    setPerPage(newPerPage)
-    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
-  }
+  const [pageIdx, setPageIdx] = useState({ startIdx: 0, endIdx: 5 })
 
   const pagination = (
-    <Pagination
-      itemCount={filteredRows.length}
-      perPage={perPage}
-      page={page}
-      onSetPage={onSetPage}
-      onPerPageSelect={onPerPageSelect}
-      perPageOptions={perPageOptions}
-    />
+    <DeveloperAccountsPagination itemCount={filteredRows.length} onPageIdxChange={setPageIdx} />
   )
 
   const visibleRows = useMemo(
@@ -159,21 +142,17 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
-  const selectedRows = rows.filter(selectedFilter)
+  const selectedRows = rows.filter(allSelectedFilter)
   const selectedCount = selectedRows.length
 
-  const onSearch = (term: string, filterBy: string) => {
+  const onFilter = (term: string) => {
     let newFilter: Filter
 
     if (term === '') {
       newFilter = allInFilter
     } else {
-      const colIndex = FILTERABLE_COLS.indexOf(filterBy)
-      const lowerCaseTerms = term.toLocaleLowerCase().trim().split(' ')
-      newFilter = ({ cells }: IRow) => {
-        const rowValue = (cells as string[])[colIndex].toLowerCase()
-        return lowerCaseTerms.some((lct) => rowValue.indexOf(lct) > -1)
-      }
+      // TODO: do actual filtering
+      newFilter = allInFilter
     }
 
     setActiveFilter(() => newFilter)
@@ -201,14 +180,11 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   const tableEmptyStateRow = useMemo(() => CreateTableEmptyState(
     t('accounts_table.empty_state_title'),
     t('accounts_table.empty_state_body'),
-    <Button variant="link" onClick={clearFilters}>
-      {t('accounts_table.empty_state_button')}
-    </Button>
+    <Button variant="link" onClick={clearFilters}>{t('accounts_table.empty_state_button')}</Button>
   ), [t])
 
   const dataToolbarItems = (
     <>
-      <span id="page-layout-table-column-management-action-toolbar-top-select-checkbox-label" hidden>Choose one</span>
       <DataToolbarContent>
         <DataToolbarItem>
           <DeveloperAccountsBulkSelector
@@ -226,7 +202,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsSearchWidget options={FILTERABLE_COLS} onFilter={onSearch} />
+          <DeveloperAccountsSearchWidget onFilter={onFilter} />
         </DataToolbarItem>
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
           {pagination}
@@ -240,9 +216,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       <Table
         aria-label={t('accounts_table.aria_label')}
         header={<DataToolbar id="accounts-toolbar-top">{dataToolbarItems}</DataToolbar>}
-        sortBy={sortBy}
-        onSort={onSort}
-        cells={COLUMNS}
+        cells={columns}
         rows={visibleRows.length ? visibleRows : tableEmptyStateRow}
         onSelect={visibleRows.length ? onSelectOne : undefined}
         canSelectAll={false}

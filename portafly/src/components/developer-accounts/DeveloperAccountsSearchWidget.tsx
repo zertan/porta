@@ -13,12 +13,17 @@ import { FilterIcon, SearchIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 
 type ISearch = {
-  options: Array<string>,
   onFilter: (term: string, filterBy: string) => void
 }
 
-const Search: React.FunctionComponent<ISearch> = ({ options, onFilter }) => {
+const Search: React.FunctionComponent<ISearch> = ({ onFilter }) => {
   const { t } = useTranslation('accounts')
+
+  const options = [
+    t('accounts_table.col_group'),
+    t('accounts_table.col_admin'),
+    t('accounts_table.col_state')
+  ]
 
   const [isExpanded, setIsExpanded] = useState(false)
   const [filterBy, setFilterBy] = useState(options[0])
