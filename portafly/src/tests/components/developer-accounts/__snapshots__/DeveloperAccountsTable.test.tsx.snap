@@ -40,7 +40,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
     >
       <div
         class="pf-c-dropdown"
-        id="checkbox_dropdown_id"
       >
         <div
           class="pf-c-dropdown__toggle pf-m-split-button"
@@ -95,7 +94,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
           aria-expanded="false"
           aria-haspopup="true"
           class="pf-c-dropdown__toggle pf-m-primary"
-          disabled=""
           id="pf-toggle-id-1"
           type="button"
         >

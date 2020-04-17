@@ -30,6 +30,8 @@ accounts_table:
       label: "{{selectedCount}} selected"
       label_description: Label indicating how many items are currently selected
     bulk_actions:
+      warning: Select accounts first to enable bulk actions
+      warning_description: Warning that displays inside the actions dropdown, when no items are selected
       title: Actions
       title_description: Title of the Actions dropdown
       send_email: Send email

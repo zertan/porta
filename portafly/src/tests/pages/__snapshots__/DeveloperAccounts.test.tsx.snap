@@ -83,7 +83,6 @@ Object {
             >
               <div
                 class="pf-c-dropdown"
-                id="checkbox_dropdown_id"
               >
                 <div
                   class="pf-c-dropdown__toggle pf-m-split-button"
@@ -138,7 +137,6 @@ Object {
                   aria-expanded="false"
                   aria-haspopup="true"
                   class="pf-c-dropdown__toggle pf-m-primary"
-                  disabled=""
                   id="pf-toggle-id-1"
                   type="button"
                 >
@@ -1062,7 +1060,6 @@ Object {
           >
             <div
               class="pf-c-dropdown"
-              id="checkbox_dropdown_id"
             >
               <div
                 class="pf-c-dropdown__toggle pf-m-split-button"
@@ -1117,7 +1114,6 @@ Object {
                 aria-expanded="false"
                 aria-haspopup="true"
                 class="pf-c-dropdown__toggle pf-m-primary"
-                disabled=""
                 id="pf-toggle-id-1"
                 type="button"
               >

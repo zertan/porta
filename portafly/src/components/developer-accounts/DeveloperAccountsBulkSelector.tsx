@@ -50,7 +50,6 @@ const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
   return (
     <Dropdown
       isOpen={isOpen}
-      id="checkbox_dropdown_id"
       dropdownItems={dropdownItems}
       onSelect={onSelect}
       toggle={(

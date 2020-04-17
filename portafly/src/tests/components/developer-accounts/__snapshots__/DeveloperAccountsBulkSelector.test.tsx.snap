@@ -3,7 +3,6 @@
 exports[`should render properly when all are selected 1`] = `
 <div
   class="pf-c-dropdown"
-  id="checkbox_dropdown_id"
 >
   <div
     class="pf-c-dropdown__toggle pf-m-split-button"
@@ -57,7 +56,6 @@ exports[`should render properly when all are selected 1`] = `
 exports[`should render properly when none are selected 1`] = `
 <div
   class="pf-c-dropdown"
-  id="checkbox_dropdown_id"
 >
   <div
     class="pf-c-dropdown__toggle pf-m-split-button"
@@ -106,7 +104,6 @@ exports[`should render properly when none are selected 1`] = `
 exports[`should render properly when some are selected 1`] = `
 <div
   class="pf-c-dropdown"
-  id="checkbox_dropdown_id"
 >
   <div
     class="pf-c-dropdown__toggle pf-m-split-button"
