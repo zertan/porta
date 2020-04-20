@@ -219,7 +219,7 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
       class="pf-c-data-toolbar__item pf-m-pagination pf-m-align-right-on-md"
     >
       <div
-        class="pf-c-pagination"
+        class="pf-c-pagination pf-m-compact"
         id="pagination-options-menu"
       >
         <div
@@ -290,28 +290,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
           class="pf-c-pagination__nav"
         >
           <button
-            aria-label="Go to first page"
-            class="pf-c-button pf-m-plain"
-            data-action="first"
-            disabled=""
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 448 512"
-              width="1em"
-            >
-              <path
-                d="M223.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L319.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L393.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34zm-192 34l136 136c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9L127.9 256l96.4-96.4c9.4-9.4 9.4-24.6 0-33.9L201.7 103c-9.4-9.4-24.6-9.4-33.9 0l-136 136c-9.5 9.4-9.5 24.6-.1 34z"
-                transform=""
-              />
-            </svg>
-          </button>
-          <button
             aria-label="Go to previous page"
             class="pf-c-button pf-m-plain"
             data-action="previous"
@@ -333,25 +311,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
               />
             </svg>
           </button>
-          <div
-            class="pf-c-pagination__nav-page-select"
-          >
-            <input
-              aria-label="Current page"
-              class="pf-c-form-control"
-              disabled=""
-              max="1"
-              min="1"
-              type="number"
-              value="1"
-            />
-            <span
-              aria-hidden="true"
-            >
-              of 
-              1
-            </span>
-          </div>
           <button
             aria-label="Go to next page"
             class="pf-c-button pf-m-plain"
@@ -370,28 +329,6 @@ exports[`when there are any accounts should render a table with accounts 1`] = `
             >
               <path
                 d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                transform=""
-              />
-            </svg>
-          </button>
-          <button
-            aria-label="Go to last page"
-            class="pf-c-button pf-m-plain"
-            data-action="last"
-            disabled=""
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 448 512"
-              width="1em"
-            >
-              <path
-                d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z"
                 transform=""
               />
             </svg>

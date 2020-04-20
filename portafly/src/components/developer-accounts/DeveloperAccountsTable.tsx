@@ -14,8 +14,7 @@ import {
   DeveloperAccountsBulkSelector,
   DeveloperAccountsSearchWidget,
   DeveloperAccountsActionsDropdown,
-  DeveloperAccountsPagination,
-  usePagination
+  TablePagination
 } from 'components'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
@@ -25,6 +24,7 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
+import { usePaginationReducer } from 'components/TablePagination'
 import { SendEmailModal } from './SendEmailModal'
 import { ChangePlanModal } from './ChangePlanModal'
 import { ChangeStatusModal } from './ChangeStatusModal'
@@ -123,27 +123,20 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
-  const {
-    page,
-    perPage,
-    pageIdx,
-    onSetPage,
-    onPerPageSelect
-  } = usePagination(5)
+  const [paginationState, dispatch] = usePaginationReducer()
+  const { startIdx, endIdx } = paginationState
 
   const pagination = (
-    <DeveloperAccountsPagination
+    <TablePagination
       itemCount={filteredRows.length}
-      page={page}
-      perPage={perPage}
-      onSetPage={onSetPage}
-      onPerPageSelect={onPerPageSelect}
+      state={paginationState}
+      dispatch={dispatch}
     />
   )
 
   const visibleRows = useMemo(
-    () => filteredRows.slice(pageIdx.startIdx, pageIdx.endIdx),
-    [rows, activeFilter, pageIdx]
+    () => filteredRows.slice(startIdx, endIdx),
+    [rows, activeFilter, startIdx, endIdx]
   )
 
   const onSelectPage = (isSelected: boolean) => {
