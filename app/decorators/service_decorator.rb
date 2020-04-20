@@ -47,7 +47,7 @@ class ServiceDecorator < ApplicationDecorator
   end
 
   def as_json(options = {})
-    hash = super(options)
+    hash = super(options.merge(only: API_KEYS))
     parse_api hash
   end
 

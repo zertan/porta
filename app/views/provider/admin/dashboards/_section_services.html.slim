@@ -2,7 +2,13 @@ header.DashboardSection-header.DashboardSection-header--extended
   = render 'services_filter'
   = render 'new_api_button'
 
+- can_toggle = current_account.multiservice? && can?(:manage, :analytics)
+- can_manage_analytics = can?(:manage, :analytics)
+- can_api_as_product = current_account.provider_can_use?(:api_as_product)
+- account_multiservice = current_account.multiservice?
+
 = render collection: @services,
+         locals: { can_toggle: can_toggle, can_manage_analytics: can_manage_analytics, account_multiservice: account_multiservice, can_api_as_product: can_api_as_product },
          partial: 'provider/admin/dashboards/service',
          cache: ->(service) { [ 'v1', 'dashboard', current_user, current_account, service, 'service' ] },
          cache_options: { expires_in: 1.hour }
