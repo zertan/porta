@@ -18,7 +18,7 @@ import {
 } from 'components'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
-import { Button } from '@patternfly/react-core'
+import { Button, OnSetPage, OnPerPageSelect } from '@patternfly/react-core'
 import {
   DataToolbar,
   DataToolbarItem,
@@ -122,10 +122,29 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
+  const [page, setPage] = useState(0)
+  const [perPage, setPerPage] = useState(5)
   const [pageIdx, setPageIdx] = useState({ startIdx: 0, endIdx: 5 })
 
+  const onSetPage: OnSetPage = (ev, newPage, _perPage, startIdx, endIdx) => {
+    setPage(newPage)
+    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
+  }
+
+  const onPerPageSelect: OnPerPageSelect = (ev, newPerPage, newPage, startIdx, endIdx) => {
+    setPerPage(newPerPage)
+    setPage(newPage)
+    setPageIdx({ startIdx: startIdx as number, endIdx: endIdx as number })
+  }
+
   const pagination = (
-    <DeveloperAccountsPagination itemCount={filteredRows.length} onPageIdxChange={setPageIdx} />
+    <DeveloperAccountsPagination
+      itemCount={filteredRows.length}
+      page={page}
+      perPage={perPage}
+      onSetPage={onSetPage}
+      onPerPageSelect={onPerPageSelect}
+    />
   )
 
   const visibleRows = useMemo(

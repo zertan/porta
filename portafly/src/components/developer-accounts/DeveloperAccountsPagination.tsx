@@ -1,33 +1,28 @@
-import React, { useState, FunctionComponent } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import { Pagination, OnSetPage, OnPerPageSelect } from '@patternfly/react-core'
 
 interface IPagination {
   itemCount: number
-  onPageIdxChange: (pageIdx: { startIdx: number, endIdx: number }) => void
+  page: number
+  onSetPage: OnSetPage
+  perPage: number
+  onPerPageSelect: OnPerPageSelect
 }
+
+const perPageOptions = [
+  { title: '5', value: 5 },
+  { title: '20', value: 20 },
+  { title: '50', value: 50 }
+]
 
 const DeveloperAccountsPagination: FunctionComponent<IPagination> = ({
   itemCount,
-  onPageIdxChange
+  page,
+  perPage,
+  onSetPage,
+  onPerPageSelect
 }) => {
-  const [page, setPage] = useState(0)
-  const [perPage, setPerPage] = useState(5)
-
-  const perPageOptions = [
-    { title: '5', value: 5 },
-    { title: '20', value: 20 },
-    { title: '50', value: 50 }
-  ]
-
-  const onSetPage: OnSetPage = (ev, newPage, _perPage, startIdx, endIdx) => {
-    setPage(newPage)
-    onPageIdxChange({ startIdx: startIdx as number, endIdx: endIdx as number })
-  }
-
-  const onPerPageSelect: OnPerPageSelect = (ev, newPerPage, newPage, startIdx, endIdx) => {
-    setPerPage(newPerPage)
-    onPageIdxChange({ startIdx: startIdx as number, endIdx: endIdx as number })
-  }
+  const isCompact = useMemo(() => (itemCount / perPage) < 3, [itemCount, perPage])
 
   return (
     <Pagination
@@ -37,6 +32,7 @@ const DeveloperAccountsPagination: FunctionComponent<IPagination> = ({
       onSetPage={onSetPage}
       onPerPageSelect={onPerPageSelect}
       perPageOptions={perPageOptions}
+      isCompact={isCompact}
     />
   )
 }
