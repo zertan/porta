@@ -1,0 +1,356 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the Login page 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        alt="Images"
+        class="pf-c-background-image css-72krlk"
+      >
+        <svg
+          class="pf-c-background-image__filter"
+          height="0"
+          width="0"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <filter
+            id="image_overlay"
+            width=""
+          >
+            <fecolormatrix
+              type="matrix"
+              values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"
+            />
+            <fecomponenttransfer
+              color-interpolation-filters="sRGB"
+              result="duotone"
+            >
+              <fefuncr
+                tableValues="0.086274509803922 0.43921568627451"
+                type="table"
+              />
+              <fefuncg
+                tableValues="0.086274509803922 0.43921568627451"
+                type="table"
+              />
+              <fefuncb
+                tableValues="0.086274509803922 0.43921568627451"
+                type="table"
+              />
+              <fefunca
+                tableValues="0 1"
+                type="table"
+              />
+            </fecomponenttransfer>
+          </filter>
+        </svg>
+      </div>
+      <div
+        class="pf-c-login"
+      >
+        <div
+          class="pf-c-login__container"
+        >
+          <header
+            class="pf-c-login__header"
+          >
+            <img
+              alt="brand_img_alt"
+              class="pf-c-brand"
+              src="test-file-stub"
+            />
+          </header>
+          <main
+            class="pf-c-login__main"
+          >
+            <header
+              class="pf-c-login__main-header"
+            >
+              <h2
+                class="pf-c-title pf-m-3xl"
+              >
+                login_title
+              </h2>
+              <p
+                class="pf-c-login__main-header-desc"
+              >
+                login_subtitle
+              </p>
+            </header>
+            <div
+              class="pf-c-login__main-body"
+            >
+              <form
+                class="pf-c-form"
+                novalidate=""
+              >
+                <div
+                  class="pf-c-form__group"
+                >
+                  <label
+                    class="pf-c-form__label"
+                    for="simple-form-name"
+                  >
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      form_label_token
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      class="pf-c-form__label-required"
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="token"
+                    name="token"
+                    required=""
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="pf-c-form__group pf-m-action"
+                  >
+                    <div
+                      class="pf-c-form__actions"
+                    >
+                      <button
+                        class="pf-c-button pf-m-primary"
+                        type="button"
+                      >
+                        login_submit
+                      </button>
+                      <button
+                        class="pf-c-button pf-m-secondary"
+                        type="button"
+                      >
+                        login_cancel
+                      </button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </form>
+            </div>
+          </main>
+          <footer
+            class="pf-c-login__footer"
+          >
+            <p>
+              text_content
+            </p>
+            <ul
+              class="pf-c-list"
+            />
+          </footer>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      alt="Images"
+      class="pf-c-background-image css-72krlk"
+    >
+      <svg
+        class="pf-c-background-image__filter"
+        height="0"
+        width="0"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter
+          id="image_overlay"
+          width=""
+        >
+          <fecolormatrix
+            type="matrix"
+            values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"
+          />
+          <fecomponenttransfer
+            color-interpolation-filters="sRGB"
+            result="duotone"
+          >
+            <fefuncr
+              tableValues="0.086274509803922 0.43921568627451"
+              type="table"
+            />
+            <fefuncg
+              tableValues="0.086274509803922 0.43921568627451"
+              type="table"
+            />
+            <fefuncb
+              tableValues="0.086274509803922 0.43921568627451"
+              type="table"
+            />
+            <fefunca
+              tableValues="0 1"
+              type="table"
+            />
+          </fecomponenttransfer>
+        </filter>
+      </svg>
+    </div>
+    <div
+      class="pf-c-login"
+    >
+      <div
+        class="pf-c-login__container"
+      >
+        <header
+          class="pf-c-login__header"
+        >
+          <img
+            alt="brand_img_alt"
+            class="pf-c-brand"
+            src="test-file-stub"
+          />
+        </header>
+        <main
+          class="pf-c-login__main"
+        >
+          <header
+            class="pf-c-login__main-header"
+          >
+            <h2
+              class="pf-c-title pf-m-3xl"
+            >
+              login_title
+            </h2>
+            <p
+              class="pf-c-login__main-header-desc"
+            >
+              login_subtitle
+            </p>
+          </header>
+          <div
+            class="pf-c-login__main-body"
+          >
+            <form
+              class="pf-c-form"
+              novalidate=""
+            >
+              <div
+                class="pf-c-form__group"
+              >
+                <label
+                  class="pf-c-form__label"
+                  for="simple-form-name"
+                >
+                  <span
+                    class="pf-c-form__label-text"
+                  >
+                    form_label_token
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    class="pf-c-form__label-required"
+                  >
+                    *
+                  </span>
+                </label>
+                <input
+                  aria-invalid="false"
+                  class="pf-c-form-control"
+                  id="token"
+                  name="token"
+                  required=""
+                  type="text"
+                  value=""
+                />
+                <div
+                  class="pf-c-form__group pf-m-action"
+                >
+                  <div
+                    class="pf-c-form__actions"
+                  >
+                    <button
+                      class="pf-c-button pf-m-primary"
+                      type="button"
+                    >
+                      login_submit
+                    </button>
+                    <button
+                      class="pf-c-button pf-m-secondary"
+                      type="button"
+                    >
+                      login_cancel
+                    </button>
+                  </div>
+                </div>
+                
+              </div>
+            </form>
+          </div>
+        </main>
+        <footer
+          class="pf-c-login__footer"
+        >
+          <p>
+            text_content
+          </p>
+          <ul
+            class="pf-c-list"
+          />
+        </footer>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
