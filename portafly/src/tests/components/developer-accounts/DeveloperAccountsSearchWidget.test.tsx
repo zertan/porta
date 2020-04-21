@@ -1,13 +1,13 @@
 import React from 'react'
 
 import { render } from 'tests/custom-render'
-import { DeveloperAccountsSearchWidget } from 'components'
+import { SearchWidget } from 'components/developer-accounts'
 import { RenderResult, fireEvent } from '@testing-library/react'
 
 let wrapper: RenderResult
 
 beforeEach(() => {
-  wrapper = render(<DeveloperAccountsSearchWidget onFilter={jest.fn()} />)
+  wrapper = render(<SearchWidget onFilter={jest.fn()} />)
 })
 
 it('should render properly', () => {

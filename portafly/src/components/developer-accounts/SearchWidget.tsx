@@ -12,11 +12,11 @@ import {
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 
-type ISearch = {
+interface ISearch {
   onFilter: (term: string, filterBy: string) => void
 }
 
-const Search: React.FunctionComponent<ISearch> = ({ onFilter }) => {
+const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
   const { t } = useTranslation('accounts')
 
   const options = [
@@ -81,4 +81,4 @@ const Search: React.FunctionComponent<ISearch> = ({ onFilter }) => {
   )
 }
 
-export { Search as DeveloperAccountsSearchWidget }
+export { SearchWidget }

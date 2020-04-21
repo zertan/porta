@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { render } from 'tests/custom-render'
-import { DeveloperAccountsTable } from 'components'
+import { DeveloperAccountsTable } from 'components/developer-accounts'
 import { developerAccounts } from 'tests/examples'
 import { RenderResult, fireEvent, within } from '@testing-library/react'
 
@@ -12,7 +12,7 @@ describe('when there are any accounts', () => {
     wrapper = render(<DeveloperAccountsTable accounts={developerAccounts} />)
   })
 
-  it('should render a table with accounts', () => {
+  it('should render a table with accounts, none selected by default', () => {
     expect(wrapper.container.firstChild).toMatchSnapshot()
   })
 

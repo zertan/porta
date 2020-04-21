@@ -13,12 +13,15 @@ import { useTranslation } from 'react-i18next'
 interface IChangeStatusModal {
   isOpen: boolean
   onClose: () => void
-  onSend: () => void
+  onSubmit: () => void
   admins: string[]
 }
 
 const ChangeStatusModal: React.FunctionComponent<IChangeStatusModal> = ({
-  isOpen, onClose, onSend, admins
+  isOpen,
+  admins,
+  onClose,
+  onSubmit
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -26,7 +29,7 @@ const ChangeStatusModal: React.FunctionComponent<IChangeStatusModal> = ({
     <Button
       key="confirm"
       variant="primary"
-      onClick={onSend}
+      onClick={onSubmit}
     >
       {t('modals.change_status.send')}
     </Button>,

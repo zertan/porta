@@ -9,13 +9,21 @@ import {
   OnSelect
 } from '@patternfly/react-table'
 import {
+  TablePagination,
+  usePaginationReducer,
   SimpleEmptyState,
-  CreateTableEmptyState,
-  DeveloperAccountsBulkSelector,
-  DeveloperAccountsSearchWidget,
-  DeveloperAccountsActionsDropdown,
-  TablePagination
+  CreateTableEmptyState
 } from 'components'
+import {
+  BulkSelector,
+  SearchWidget,
+  SendEmailModal,
+  ChangePlanModal,
+  ChangeStatusModal,
+  ActionsDropdown,
+  BulkAction
+} from 'components/developer-accounts'
+import { useAlertsContext } from 'components/util'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
 import { Button } from '@patternfly/react-core'
@@ -24,10 +32,7 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
-import { usePaginationReducer } from 'components/TablePagination'
-import { SendEmailModal } from './SendEmailModal'
-import { ChangePlanModal } from './ChangePlanModal'
-import { ChangeStatusModal } from './ChangeStatusModal'
+import { sendEmail } from 'dal/accounts/sendEmail'
 
 interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
@@ -35,14 +40,13 @@ interface IDeveloperAccountsTable {
 
 const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> = ({ accounts }) => {
   const { t } = useTranslation('accounts')
+  const { addAlert } = useAlertsContext()
 
   if (accounts.length === 0) {
     return <SimpleEmptyState msg={t('accounts_table.empty_state')} />
   }
 
-  const [isSendEmailModalOpen, setIsSendEmailModalOpen] = useState(false)
-  const [isChangePlanModalOpen, setIsChangePlanModalOpen] = useState(false)
-  const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false)
+  const [visibleModal, setVisibleModal] = useState<BulkAction>()
 
   const columns: ICell[] = [
     {
@@ -164,23 +168,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setActiveFilter(() => newFilter)
   }
 
-  const onModalActionSelected = (action: 'email' | 'plan' | 'status') => {
-    // eslint-disable-next-line default-case
-    switch (action) {
-      case 'email':
-        setIsSendEmailModalOpen(true)
-        break
-
-      case 'plan':
-        setIsChangePlanModalOpen(true)
-        break
-
-      case 'status':
-        setIsChangeStatusModalOpen(true)
-        break
-    }
-  }
-
   const clearFilters = () => setActiveFilter(() => allInFilter)
 
   const tableEmptyStateRow = useMemo(() => CreateTableEmptyState(
@@ -193,7 +180,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     <>
       <DataToolbarContent>
         <DataToolbarItem>
-          <DeveloperAccountsBulkSelector
+          <BulkSelector
             onSelectAll={onSelectAll}
             onSelectPage={onSelectPage}
             pageCount={visibleRows.length}
@@ -202,13 +189,13 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsActionsDropdown
+          <ActionsDropdown
             isDisabled={selectedCount === 0}
-            onAction={onModalActionSelected}
+            selectAction={setVisibleModal}
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <DeveloperAccountsSearchWidget onFilter={onFilter} />
+          <SearchWidget onFilter={onFilter} />
         </DataToolbarItem>
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
           {pagination}
@@ -239,24 +226,33 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       </DataToolbar>
 
       <SendEmailModal
-        isOpen={isSendEmailModalOpen}
+        isOpen={visibleModal === 'sendEmail'}
         admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
-        onClose={() => setIsSendEmailModalOpen(false)}
-        onSend={() => {}}
+        onClose={() => setVisibleModal(undefined)}
+        onSubmit={() => {
+          setVisibleModal(undefined)
+          const start = t('toast.send_email_start')
+          const success = t('toast.send_email_success')
+          const error = t('toast.send_email_error')
+          addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+          sendEmail()
+            .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+            .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+        }}
       />
 
       <ChangePlanModal
-        isOpen={isChangePlanModalOpen}
+        isOpen={visibleModal === 'changePlan'}
         admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
-        onClose={() => setIsChangePlanModalOpen(false)}
-        onSend={() => {}}
+        onClose={() => setVisibleModal(undefined)}
+        onSubmit={() => {}}
       />
 
       <ChangeStatusModal
-        isOpen={isChangeStatusModalOpen}
+        isOpen={visibleModal === 'changeStatus'}
         admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
-        onClose={() => setIsChangeStatusModalOpen(false)}
-        onSend={() => {}}
+        onClose={() => setVisibleModal(undefined)}
+        onSubmit={() => {}}
       />
     </>
   )

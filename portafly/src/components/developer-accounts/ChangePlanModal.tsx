@@ -13,12 +13,15 @@ import { useTranslation } from 'react-i18next'
 interface IChangePlanModal {
   isOpen: boolean
   onClose: () => void
-  onSend: () => void
+  onSubmit: () => void
   admins: string[]
 }
 
 const ChangePlanModal: React.FunctionComponent<IChangePlanModal> = ({
-  isOpen, onClose, onSend, admins
+  isOpen,
+  onClose,
+  onSubmit,
+  admins
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -26,7 +29,7 @@ const ChangePlanModal: React.FunctionComponent<IChangePlanModal> = ({
     <Button
       key="confirm"
       variant="primary"
-      onClick={onSend}
+      onClick={onSubmit}
     >
       {t('modals.change_plan.send')}
     </Button>,

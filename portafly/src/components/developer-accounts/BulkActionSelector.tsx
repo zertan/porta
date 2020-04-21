@@ -7,7 +7,7 @@ import {
 } from '@patternfly/react-core'
 import { useTranslation } from 'i18n/useTranslation'
 
-type IBulkSelector = {
+interface IBulkSelector {
   onSelectAll: (selected: boolean) => void
   onSelectPage: (selected: boolean) => void
   pageCount: number,
@@ -16,7 +16,11 @@ type IBulkSelector = {
 }
 
 const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
-  onSelectAll, onSelectPage, pageCount, allCount, selectedCount
+  onSelectAll,
+  onSelectPage,
+  pageCount,
+  allCount,
+  selectedCount
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -73,4 +77,4 @@ const BulkSelector: React.FunctionComponent<IBulkSelector> = ({
   )
 }
 
-export { BulkSelector as DeveloperAccountsBulkSelector }
+export { BulkSelector }

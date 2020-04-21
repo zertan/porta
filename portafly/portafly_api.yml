@@ -9,6 +9,25 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 paths:
+  /buyers/accounts/bulk/send_email:
+    summary: Send an email to a list of admins
+    requestBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              selected:
+                type: string
+              subject:
+                type: string
+              body:
+                type: strong
+            required:
+              - selected
+              - subject
+              - body
   /developer/accounts:
     summary: A list of developer accounts
     description: A list of developer accounts.

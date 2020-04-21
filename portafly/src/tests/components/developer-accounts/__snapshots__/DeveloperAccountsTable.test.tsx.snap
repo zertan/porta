@@ -27,7 +27,7 @@ exports[`when there are NO accounts should render an empty view 1`] = `
 </div>
 `;
 
-exports[`when there are any accounts should render a table with accounts 1`] = `
+exports[`when there are any accounts should render a table with accounts, none selected by default 1`] = `
 <div
   class="pf-c-data-toolbar"
   id="accounts-toolbar-top"

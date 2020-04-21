@@ -1,9 +1,6 @@
 import React from 'react'
-import {
-  useDocumentTitle,
-  Loading,
-  DeveloperAccountsTable
-} from 'components'
+import { useDocumentTitle, Loading } from 'components'
+import { DeveloperAccountsTable } from 'components/developer-accounts'
 import {
   Alert,
   PageSection,

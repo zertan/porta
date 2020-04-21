@@ -11,14 +11,16 @@ import {
 import { CaretDownIcon, WarningTriangleIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 
-type IActionsDropdown = {
+export type BulkAction = 'sendEmail' | 'changePlan' | 'changeStatus'
+
+interface IActionsDropdown {
   isDisabled?: boolean
-  onAction: (action: 'email'|'plan'|'status') => void
+  selectAction: (action: BulkAction) => void
 }
 
 const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
   isDisabled = false,
-  onAction
+  selectAction
 }) => {
   const { t } = useTranslation('accounts')
 
@@ -49,7 +51,7 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
       key="0"
       component="button"
       isDisabled={isDisabled}
-      onClick={() => onAction('email')}
+      onClick={() => selectAction('sendEmail')}
     >
       {t('accounts_table.data_toolbar.bulk_actions.send_email')}
     </DropdownItem>,
@@ -57,7 +59,7 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
       key="1"
       component="button"
       isDisabled={isDisabled}
-      onClick={() => onAction('plan')}
+      onClick={() => selectAction('changePlan')}
     >
       {t('accounts_table.data_toolbar.bulk_actions.change_plan')}
     </DropdownItem>,
@@ -65,7 +67,7 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
       key="2"
       component="button"
       isDisabled={isDisabled}
-      onClick={() => onAction('status')}
+      onClick={() => selectAction('changeStatus')}
     >
       {t('accounts_table.data_toolbar.bulk_actions.change_status')}
     </DropdownItem>
@@ -81,4 +83,4 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
   )
 }
 
-export { ActionsDropdown as DeveloperAccountsActionsDropdown }
+export { ActionsDropdown }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Modal,
   Button,
@@ -8,40 +8,65 @@ import {
   TextInput,
   TextContent,
   TextList,
-  TextListItem
+  TextListItem,
+  TextArea
 } from '@patternfly/react-core'
 import { useTranslation } from 'react-i18next'
 
+import './sendEmailModal.scss'
+
 interface ISendEmailModal {
   isOpen: boolean
-  onClose: () => void
-  onSend: () => void
   admins: string[]
+  onClose: () => void
+  onSubmit: () => void
 }
 
 const SendEmailModal: React.FunctionComponent<ISendEmailModal> = ({
-  isOpen, onClose, onSend, admins
+  isOpen,
+  onClose,
+  onSubmit,
+  admins
 }) => {
   const { t } = useTranslation('accounts')
 
   const [subject, setSubject] = useState('')
-  const [message, setMessage] = useState('')
+  const [body, setBody] = useState('')
+  const [isListCollapsed, setIsListCollapsed] = useState(admins.length > 5)
 
-  const isSendDisabled = subject.length === 0 || message.length === 0
+  const isSendDisabled = subject.length === 0 || body.length === 0
 
   const actions = [
     <Button
       key="confirm"
       variant="primary"
-      onClick={onSend}
+      onClick={onSubmit}
       isDisabled={isSendDisabled}
     >
       {t('modals.send_email.send')}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onClose}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onClose}
+    >
       {t('modals.send_email.cancel')}
     </Button>
   ]
+
+  const textListItems = useMemo(
+    () => admins.map((a) => <TextListItem key={a}>{a}</TextListItem>),
+    [admins]
+  )
+
+  const adminList = isListCollapsed ? (
+    <>
+      {textListItems.slice(0, 5)}
+      <Button component="a" onClick={() => setIsListCollapsed(false)} variant="link">
+        {t('modals.expand_list_button', { count: admins.length - 5 })}
+      </Button>
+    </>
+  ) : textListItems
 
   return (
     <Modal
@@ -55,40 +80,29 @@ const SendEmailModal: React.FunctionComponent<ISendEmailModal> = ({
       <TextContent>
         <Text>{t('modals.send_email.to')}</Text>
         <TextList>
-          {admins.map((a) => <TextListItem key={a}>{a}</TextListItem>)}
+          {adminList}
         </TextList>
       </TextContent>
       <Form>
-        <FormGroup
-          label={t('modals.send_email.subject')}
-          isRequired
-          fieldId="send-email-subject"
-          // helperText="Please provide your full name"
-        >
+        <FormGroup label={t('modals.send_email.subject')} isRequired fieldId="send-email-subject">
           <TextInput
             isRequired
             type="text"
-            // id="simple-form-name"
-            // name="simple-form-name"
-            aria-describedby="simple-form-name-helper"
+            id="subject"
+            name="subject"
+            aria-describedby="subject-helper"
             value={subject}
             onChange={setSubject}
           />
         </FormGroup>
-        <FormGroup
-          label={t('modals.send_email.message')}
-          isRequired
-          fieldId="send-email-message"
-          // helperText="Please provide your full name"
-        >
-          <TextInput
+        <FormGroup label={t('modals.send_email.body')} isRequired fieldId="send-email-body">
+          <TextArea
             isRequired
-            type="text"
-            // id="simple-form-name"
-            // name="simple-form-name"
-            aria-describedby="simple-form-name-helper"
-            value={message}
-            onChange={setMessage}
+            id="body"
+            name="body"
+            aria-label="aria label"
+            value={body}
+            onChange={setBody}
           />
         </FormGroup>
       </Form>

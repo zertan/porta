@@ -2,7 +2,7 @@ import React from 'react'
 import { Brand } from '@patternfly/react-core'
 import { useTranslation } from 'i18n/useTranslation'
 import { useHistory } from 'react-router-dom'
-import { AppLayout } from 'components'
+import { AppLayout, AlertsProvider } from 'components'
 import logo from 'assets/logo.svg'
 
 const Root: React.FunctionComponent = ({ children }) => {
@@ -53,16 +53,19 @@ const Root: React.FunctionComponent = ({ children }) => {
     }),
     [history]
   )
+
   return (
-    <AppLayout
-      logo={Logo}
-      logoProps={logoProps}
-      navVariant="vertical"
-      navItems={navItems}
-      navGroupsStyle="expandable"
-    >
-      {children}
-    </AppLayout>
+    <AlertsProvider>
+      <AppLayout
+        logo={Logo}
+        logoProps={logoProps}
+        navVariant="vertical"
+        navItems={navItems}
+        navGroupsStyle="expandable"
+      >
+        {children}
+      </AppLayout>
+    </AlertsProvider>
   )
 }
 
