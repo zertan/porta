@@ -22,12 +22,11 @@ class Buyers::ApplicationsController < FrontendController
     activate_menu :audience, :applications, :listing
 
     @states = Cinstance.allowed_states.collect(&:to_s).sort
-    @services = accessible_services
     @search = ThreeScale::Search.new(params[:search] || params)
-    @application_plans = accessible_plans
+    @application_plans = accessible_plans.stock
 
     if params[:service_id]
-      @service = @services.find params[:service_id]
+      @service = accessible_services.find params[:service_id]
       @search.service_id = @service.id
     end
 
@@ -189,8 +188,10 @@ class Buyers::ApplicationsController < FrontendController
   end
 
   def accessible_services
-    current_user.accessible_services.includes(:application_plans)
+    @accessible_services ||= current_user.accessible_services.includes(:application_plans)
   end
+
+  helper_method :accessible_services
 
   def accessible_plans
     current_account.application_plans.where(issuer: accessible_services)
