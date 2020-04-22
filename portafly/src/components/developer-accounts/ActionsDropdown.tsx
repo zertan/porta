@@ -11,7 +11,7 @@ import {
 import { CaretDownIcon, WarningTriangleIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 
-export type BulkAction = 'sendEmail' | 'changePlan' | 'changeStatus'
+export type BulkAction = 'sendEmail' | 'changePlan' | 'changeState'
 
 interface IActionsDropdown {
   isDisabled?: boolean
@@ -67,9 +67,9 @@ const ActionsDropdown: React.FunctionComponent<IActionsDropdown> = ({
       key="2"
       component="button"
       isDisabled={isDisabled}
-      onClick={() => selectAction('changeStatus')}
+      onClick={() => selectAction('changeState')}
     >
-      {t('accounts_table.data_toolbar.bulk_actions.change_status')}
+      {t('accounts_table.data_toolbar.bulk_actions.change_state')}
     </DropdownItem>
   ], [isDisabled])
 

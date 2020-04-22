@@ -13,16 +13,16 @@ import {
 } from '@patternfly/react-core'
 import { useTranslation } from 'react-i18next'
 
-import './sendEmailModal.scss'
+import './modals.scss'
 
-interface ISendEmailModal {
+interface IProps {
   isOpen: boolean
   admins: string[]
   onClose: () => void
   onSubmit: () => void
 }
 
-const SendEmailModal: React.FunctionComponent<ISendEmailModal> = ({
+const SendEmailModal: React.FunctionComponent<IProps> = ({
   isOpen,
   onClose,
   onSubmit,

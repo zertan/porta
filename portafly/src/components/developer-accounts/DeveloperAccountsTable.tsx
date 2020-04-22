@@ -19,7 +19,7 @@ import {
   SearchWidget,
   SendEmailModal,
   ChangePlanModal,
-  ChangeStatusModal,
+  ChangeStateModal,
   ActionsDropdown,
   BulkAction
 } from 'components/developer-accounts'
@@ -32,7 +32,7 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
-import { sendEmail } from 'dal/accounts/sendEmail'
+import { sendEmail, changePlan, changeState } from 'dal/accounts/bulkActions'
 
 interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
@@ -88,7 +88,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         title: <Button variant="link">Impersonate</Button>
       }
     ],
-    selected: false
+    selected: true
   }))
 
   const [rows, setRows] = useState(initialRows)
@@ -225,35 +225,59 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         </DataToolbarContent>
       </DataToolbar>
 
-      <SendEmailModal
-        isOpen={visibleModal === 'sendEmail'}
-        admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
-        onClose={() => setVisibleModal(undefined)}
-        onSubmit={() => {
-          setVisibleModal(undefined)
-          const start = t('toast.send_email_start')
-          const success = t('toast.send_email_success')
-          const error = t('toast.send_email_error')
-          addAlert({ key: Date.now().toString(), variant: 'info', title: start })
-          sendEmail()
-            .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
-            .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
-        }}
-      />
+      {visibleModal === 'sendEmail' && (
+        <SendEmailModal
+          isOpen
+          admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
+          onClose={() => setVisibleModal(undefined)}
+          onSubmit={() => {
+            setVisibleModal(undefined)
+            const start = t('toasts.send_email_start')
+            const success = t('toasts.send_email_success')
+            const error = t('toasts.send_email_error')
+            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+            sendEmail()
+              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+          }}
+        />
+      )}
 
-      <ChangePlanModal
-        isOpen={visibleModal === 'changePlan'}
-        admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
-        onClose={() => setVisibleModal(undefined)}
-        onSubmit={() => {}}
-      />
+      {visibleModal === 'changePlan' && (
+        <ChangePlanModal
+          isOpen
+          admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
+          onClose={() => setVisibleModal(undefined)}
+          onSubmit={() => {
+            setVisibleModal(undefined)
+            const start = t('toasts.change_plan_start')
+            const success = t('toasts.change_plan_success')
+            const error = t('toasts.change_plan_error')
+            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+            changePlan()
+              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+          }}
+        />
+      )}
 
-      <ChangeStatusModal
-        isOpen={visibleModal === 'changeStatus'}
-        admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
-        onClose={() => setVisibleModal(undefined)}
-        onSubmit={() => {}}
-      />
+      {visibleModal === 'changeState' && (
+        <ChangeStateModal
+          isOpen
+          admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
+          onClose={() => setVisibleModal(undefined)}
+          onSubmit={() => {
+            setVisibleModal(undefined)
+            const start = t('toasts.change_state_start')
+            const success = t('toasts.change_state_success')
+            const error = t('toasts.change_state_error')
+            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+            changeState()
+              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+          }}
+        />
+      )}
     </>
   )
 }

@@ -24,27 +24,31 @@ const AlertsProvider: React.FunctionComponent = ({ children }) => {
 
   const addAlert = (alert: IAlert) => {
     setAlerts((prevAlerts) => [...prevAlerts, alert])
-    setTimeout(() => removeAlert(alert.key), 3000)
   }
 
   return (
     <AlertsContext.Provider value={{ addAlert }}>
       <AlertGroup isToast>
-        {alerts.map(({ key, variant, title }) => (
-          <Alert
-            key={key}
-            isLiveRegion
-            variant={variant}
-            title={title}
-            action={(
-              <AlertActionCloseButton
-                title="button title"
-                variantLabel="variant alert"
-                onClose={() => removeAlert(key)}
-              />
+        {alerts.map(({ key, variant, title }) => {
+          setTimeout(() => removeAlert(key), 8000)
+          return (
+            <Alert
+              key={key}
+              isLiveRegion
+              variant={variant}
+              title={title}
+              action={(
+                <AlertActionCloseButton
+                  title="button title"
+                  variantLabel="variant alert"
+                  onClose={() => removeAlert(key)}
+                />
             )}
-          />
-        ))}
+              onMouseEnter={() => console.log('pause/cancel timeout')}
+              onMouseLeave={() => console.log('resume/set timeout')}
+            />
+          )
+        })}
       </AlertGroup>
       {children}
     </AlertsContext.Provider>

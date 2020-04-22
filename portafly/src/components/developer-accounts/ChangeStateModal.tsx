@@ -20,7 +20,7 @@ interface IProps {
   admins: string[]
 }
 
-const ChangePlanModal: React.FunctionComponent<IProps> = ({
+const ChangeStateModal: React.FunctionComponent<IProps> = ({
   isOpen,
   onClose,
   onSubmit,
@@ -38,18 +38,19 @@ const ChangePlanModal: React.FunctionComponent<IProps> = ({
       onClick={onSubmit}
       isDisabled={value === ''}
     >
-      {t('modals.change_plan.send')}
+      {t('modals.change_state.send')}
     </Button>,
     <Button key="cancel" variant="link" onClick={onClose}>
-      {t('modals.change_plan.cancel')}
+      {t('modals.change_state.cancel')}
     </Button>
   ]
 
   const options = [
     { value: '', label: '' },
-    { value: 'plan_a', label: 'Plan A' },
-    { value: 'plan_b', label: 'Plan B' },
-    { value: 'plan_c', label: 'Plan C' }
+    { value: 'approved', label: t('state.approved') },
+    { value: 'pending', label: t('state.pending') },
+    { value: 'rejected', label: t('state.rejected') },
+    { value: 'suspended', label: t('state.suspended') }
   ]
 
   const textListItems = useMemo(
@@ -69,22 +70,23 @@ const ChangePlanModal: React.FunctionComponent<IProps> = ({
   return (
     <Modal
       width="44%"
-      title={t('modals.change_plan.title')}
+      title={t('modals.change_state.title')}
       isOpen={isOpen}
       onClose={onClose}
       actions={actions}
       isFooterLeftAligned
     >
       <TextContent>
-        <Text>{t('modals.change_plan.to')}</Text>
+        <Text>{t('modals.change_state.to')}</Text>
         <TextList>
           {adminList}
         </TextList>
       </TextContent>
       <Form>
         <FormGroup
-          label={t('modals.change_plan.select_label')}
+          label={t('modals.change_state.select_label')}
           type="string"
+          helperText={t('modals.change_state.select_helper_text')}
           fieldId="state"
         >
           <FormSelect
@@ -103,4 +105,4 @@ const ChangePlanModal: React.FunctionComponent<IProps> = ({
   )
 }
 
-export { ChangePlanModal }
+export { ChangeStateModal }

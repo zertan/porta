@@ -146,7 +146,7 @@ exports[`when it is disabled shows a warning inside the dropdown when opened 1`]
         tabindex="-1"
         type="button"
       >
-        accounts_table.data_toolbar.bulk_actions.change_status
+        accounts_table.data_toolbar.bulk_actions.change_state
       </button>
     </li>
   </ul>
@@ -255,7 +255,7 @@ exports[`when it is enabled shows the list of options when opened 1`] = `
         tabindex="-1"
         type="button"
       >
-        accounts_table.data_toolbar.bulk_actions.change_status
+        accounts_table.data_toolbar.bulk_actions.change_state
       </button>
     </li>
   </ul>
