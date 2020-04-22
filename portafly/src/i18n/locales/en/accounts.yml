@@ -67,6 +67,10 @@ accounts_table:
   col_state_description: Title of the State column
   col_actions: Actions
   col_actions_description: Title of Actions column
+  actions:
+    impersonate: Act as
+    approve: Approve
+    activate: Activate
 modals:
   send_email:
     title: Send email to admins of selected accounts

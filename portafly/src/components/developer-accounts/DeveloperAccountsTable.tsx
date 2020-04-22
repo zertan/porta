@@ -21,7 +21,8 @@ import {
   ChangePlanModal,
   ChangeStateModal,
   ActionsDropdown,
-  BulkAction
+  BulkAction,
+  ActionButtonImpersonate
 } from 'components/developer-accounts'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
@@ -31,12 +32,17 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
+import { CheckIcon, PlayCircleIcon } from '@patternfly/react-icons'
 
 interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
+  isMultitenant?: boolean
 }
 
-const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> = ({ accounts }) => {
+const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> = ({
+  accounts,
+  isMultitenant = false
+}) => {
   const { t } = useTranslation('accounts')
 
   if (accounts.length === 0) {
@@ -76,7 +82,12 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     }]
   ]
 
-  const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
+  const buttons = [
+    <Button variant="link" icon={<CheckIcon />}>{t('accounts_table.actions.approve')}</Button>,
+    <Button variant="link" icon={<PlayCircleIcon />}>{t('accounts_table.actions.activate')}</Button>
+  ]
+
+  const initialRows: Array<IRow & { key: string }> = accounts.map((a, i) => ({
     key: String(a.id),
     // Order of cells must match the columns
     cells: [
@@ -90,8 +101,9 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
         a.apps_count.toString(),
         a.state,
         {
-        // TODO: implement this button
-          title: <Button variant="link">Impersonate</Button>
+          // TODO: where does isMultitenant come from
+          // TODO: how to decide wether approve or activate
+          title: isMultitenant ? <ActionButtonImpersonate /> : buttons[i % 2]
         }
       ]
     ],
