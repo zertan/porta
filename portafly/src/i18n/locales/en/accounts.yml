@@ -59,6 +59,8 @@ accounts_table:
   col_admin_description: Title of the Admin column
   col_signup: Signup date
   col_signup_description: Title of the Signup date column
+  col_plan: Plan
+  col_plan_description: Title of the Plan column
   col_apps: Applications
   col_apps_description: Title of the Applications column
   col_state: State

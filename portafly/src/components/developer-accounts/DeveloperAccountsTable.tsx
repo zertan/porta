@@ -46,7 +46,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   const [visibleModal, setVisibleModal] = useState<BulkAction>()
 
   const columns: ICell[] = [
-    {
+    ...[{
       title: t('accounts_table.col_group'),
       transforms: [sortable]
     },
@@ -57,8 +57,13 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     {
       title: t('accounts_table.col_signup'),
       transforms: [sortable]
-    },
-    {
+    }],
+    // Add this column only when PAID
+    ...accounts[0].plan ? [{
+      title: t('accounts_table.col_plan'),
+      transforms: [sortable]
+    }] : [],
+    ...[{
       title: t('accounts_table.col_apps'),
       transforms: [sortable]
     },
@@ -68,22 +73,27 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     },
     {
       title: t('accounts_table.col_actions')
-    }
+    }]
   ]
 
   const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
     key: String(a.id),
     // Order of cells must match the columns
     cells: [
-      a.org_name,
-      a.admin_name,
-      a.created_at,
-      a.apps_count.toString(),
-      a.state,
-      {
+      ...[
+        a.org_name,
+        a.admin_name,
+        a.created_at
+      ],
+      ...a.plan ? [a.plan] : [],
+      ...[
+        a.apps_count.toString(),
+        a.state,
+        {
         // TODO: implement this button
-        title: <Button variant="link">Impersonate</Button>
-      }
+          title: <Button variant="link">Impersonate</Button>
+        }
+      ]
     ],
     selected: true
   }))
