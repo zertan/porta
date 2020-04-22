@@ -23,7 +23,6 @@ import {
   ActionsDropdown,
   BulkAction
 } from 'components/developer-accounts'
-import { useAlertsContext } from 'components/util'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
 import { Button } from '@patternfly/react-core'
@@ -32,7 +31,6 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
-import { sendEmail, changePlan, changeState } from 'dal/accounts/bulkActions'
 
 interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
@@ -40,7 +38,6 @@ interface IDeveloperAccountsTable {
 
 const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> = ({ accounts }) => {
   const { t } = useTranslation('accounts')
-  const { addAlert } = useAlertsContext()
 
   if (accounts.length === 0) {
     return <SimpleEmptyState msg={t('accounts_table.empty_state')} />
@@ -230,16 +227,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
           onClose={() => setVisibleModal(undefined)}
-          onSubmit={() => {
-            setVisibleModal(undefined)
-            const start = t('toasts.send_email_start')
-            const success = t('toasts.send_email_success')
-            const error = t('toasts.send_email_error')
-            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
-            sendEmail()
-              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
-              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
-          }}
         />
       )}
 
@@ -248,16 +235,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
           onClose={() => setVisibleModal(undefined)}
-          onSubmit={() => {
-            setVisibleModal(undefined)
-            const start = t('toasts.change_plan_start')
-            const success = t('toasts.change_plan_success')
-            const error = t('toasts.change_plan_error')
-            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
-            changePlan()
-              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
-              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
-          }}
         />
       )}
 
@@ -266,16 +243,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
           onClose={() => setVisibleModal(undefined)}
-          onSubmit={() => {
-            setVisibleModal(undefined)
-            const start = t('toasts.change_state_start')
-            const success = t('toasts.change_state_success')
-            const error = t('toasts.change_state_error')
-            addAlert({ key: Date.now().toString(), variant: 'info', title: start })
-            changeState()
-              .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
-              .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
-          }}
         />
       )}
     </>

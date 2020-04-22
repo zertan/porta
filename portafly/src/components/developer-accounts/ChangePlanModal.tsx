@@ -12,24 +12,36 @@ import {
   FormGroup
 } from '@patternfly/react-core'
 import { useTranslation } from 'react-i18next'
+import { useAlertsContext } from 'components/util'
+import { changePlan } from 'dal/accounts/bulkActions'
 
 interface IProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: () => void
   admins: string[]
 }
 
 const ChangePlanModal: React.FunctionComponent<IProps> = ({
   isOpen,
   onClose,
-  onSubmit,
   admins
 }) => {
   const { t } = useTranslation('accounts')
+  const { addAlert } = useAlertsContext()
 
   const [value, setValue] = useState('')
   const [isListCollapsed, setIsListCollapsed] = useState(admins.length > 5)
+
+  const onSubmit = () => {
+    onClose()
+    const start = t('toasts.change_plan_start')
+    const success = t('toasts.change_plan_success')
+    const error = t('toasts.change_plan_error')
+    addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+    changePlan()
+      .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+      .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+  }
 
   const actions = [
     <Button

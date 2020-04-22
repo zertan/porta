@@ -14,27 +14,39 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import './modals.scss'
+import { sendEmail } from 'dal/accounts/bulkActions'
+import { useAlertsContext } from 'components/util'
 
 interface IProps {
   isOpen: boolean
   admins: string[]
   onClose: () => void
-  onSubmit: () => void
 }
 
 const SendEmailModal: React.FunctionComponent<IProps> = ({
   isOpen,
   onClose,
-  onSubmit,
   admins
 }) => {
   const { t } = useTranslation('accounts')
+  const { addAlert } = useAlertsContext()
 
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [isListCollapsed, setIsListCollapsed] = useState(admins.length > 5)
 
   const isSendDisabled = subject.length === 0 || body.length === 0
+
+  const onSubmit = () => {
+    onClose()
+    const start = t('toasts.send_email_start')
+    const success = t('toasts.send_email_success')
+    const error = t('toasts.send_email_error')
+    addAlert({ key: Date.now().toString(), variant: 'info', title: start })
+    sendEmail()
+      .then(() => addAlert({ key: Date.now().toString(), variant: 'success', title: success }))
+      .catch(() => addAlert({ key: Date.now().toString(), variant: 'danger', title: error }))
+  }
 
   const actions = [
     <Button
