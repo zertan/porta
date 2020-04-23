@@ -13,9 +13,17 @@ class Provider::Admin::DashboardsController < FrontendController
     # .scoped(:include => [ :message => [ :sender ]])
     #
     # but 'Cannot eagerly load the polymorphic association :sender'
-    @services           = current_user.accessible_services.includes(:proxy, :cinstances)
+    @services           = current_user.accessible_services
     @messages_presenter = current_presenter
     @unread_messages_presenter = unread_messages_presenter
+  end
+
+  def service_content
+    @service = current_user.accessible_services.find(params.fetch(:service_id))
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   include DashboardTimeRange

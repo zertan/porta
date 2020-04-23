@@ -222,7 +222,9 @@ without fake Core server your after commit callbacks will crash and you might ge
           patch :publish_or_hide
         end
       end
-      resource :dashboard, :only => [:show]
+      resource :dashboard, :only => [:show] do
+        get :service_content, on: :collection
+      end
 
       namespace :dashboard do
         resource :new_accounts, only: [:show]

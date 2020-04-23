@@ -1,0 +1,11 @@
+<% section_id = "ajax_load_#{dom_id(service)}" %>
+
+<div id="<%= section_id %>">
+  <%= service.id %>
+</div>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    $.ajax({ url: '<%= service_content_provider_admin_dashboard_path(service_id: service.id, format: 'js') %>', dataType: 'script' });
+  });
+<% end %>

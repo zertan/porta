@@ -1,0 +1,3 @@
+<% section_id = "ajax_load_#{dom_id(@service)}" %>
+
+$("#<%= section_id %>").replaceWith('<%= escape_javascript(render partial: "service_content", locals: { service: @service }) %>');
