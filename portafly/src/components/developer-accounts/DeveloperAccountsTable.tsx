@@ -3,8 +3,6 @@ import {
   Table,
   TableHeader,
   TableBody,
-  sortable,
-  ICell,
   IRow,
   OnSelect
 } from '@patternfly/react-table'
@@ -12,7 +10,7 @@ import {
   TablePagination,
   usePaginationReducer,
   SimpleEmptyState,
-  CreateTableEmptyState
+  TableEmptyState
 } from 'components'
 import {
   BulkSelector,
@@ -22,7 +20,7 @@ import {
   ChangeStateModal,
   ActionsDropdown,
   BulkAction,
-  ActionButtonImpersonate
+  useDevAccountsTable
 } from 'components/developer-accounts'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
@@ -32,7 +30,6 @@ import {
   DataToolbarItem,
   DataToolbarContent
 } from '@patternfly/react-core/dist/js/experimental'
-import { CheckIcon, PlayCircleIcon } from '@patternfly/react-icons'
 
 interface IDeveloperAccountsTable {
   accounts: IDeveloperAccount[]
@@ -49,75 +46,75 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     return <SimpleEmptyState msg={t('accounts_table.empty_state')} />
   }
 
+  /**
+   * Modals region
+   */
   const [visibleModal, setVisibleModal] = useState<BulkAction>()
 
-  const columns: ICell[] = [
-    ...[{
-      title: t('accounts_table.col_group'),
-      transforms: [sortable]
-    },
-    {
-      title: t('accounts_table.col_admin'),
-      transforms: [sortable]
-    },
-    {
-      title: t('accounts_table.col_signup'),
-      transforms: [sortable]
-    }],
-    // Add this column only when PAID
-    ...accounts[0].plan ? [{
-      title: t('accounts_table.col_plan'),
-      transforms: [sortable]
-    }] : [],
-    ...[{
-      title: t('accounts_table.col_apps'),
-      transforms: [sortable]
-    },
-    {
-      title: t('accounts_table.col_state'),
-      transforms: [sortable]
-    },
-    {
-      title: t('accounts_table.col_actions')
-    }]
-  ]
-
-  const buttons = [
-    <Button variant="link" icon={<CheckIcon />}>{t('accounts_table.actions.approve')}</Button>,
-    <Button variant="link" icon={<PlayCircleIcon />}>{t('accounts_table.actions.activate')}</Button>
-  ]
-
-  const initialRows: Array<IRow & { key: string }> = accounts.map((a, i) => ({
-    key: String(a.id),
-    // Order of cells must match the columns
-    cells: [
-      ...[
-        a.org_name,
-        a.admin_name,
-        a.created_at
-      ],
-      ...a.plan ? [a.plan] : [],
-      ...[
-        a.apps_count.toString(),
-        a.state,
-        {
-          // TODO: where does isMultitenant come from
-          // TODO: how to decide wether approve or activate
-          title: isMultitenant ? <ActionButtonImpersonate /> : buttons[i % 2]
-        }
-      ]
-    ],
-    selected: true
-  }))
-
+  /**
+   * Init table region
+   */
+  const { columns, initialRows } = useDevAccountsTable(accounts, isMultitenant)
   const [rows, setRows] = useState(initialRows)
 
+  /**
+   * Pagination Region
+   */
+  const [paginationState, dispatch] = usePaginationReducer()
+  const { startIdx, endIdx } = paginationState
+
+  /**
+   * Filtering Region
+   */
   type Filter = (row: IRow) => boolean
   const allInFilter: Filter = () => true
   const allSelectedFilter: Filter = (r) => (r.selected as boolean)
   const [activeFilter, setActiveFilter] = useState(() => allInFilter)
 
   const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
+
+  const onFilter = (term: string) => {
+    let newFilter: Filter
+
+    if (term === '') {
+      newFilter = allInFilter
+    } else {
+      // TODO: do actual filtering
+      newFilter = allInFilter
+    }
+
+    setActiveFilter(() => newFilter)
+  }
+
+  const clearFilters = () => setActiveFilter(() => allInFilter)
+
+  const visibleRows = useMemo(
+    () => filteredRows.slice(startIdx, endIdx),
+    [rows, activeFilter, startIdx, endIdx]
+  )
+
+  /**
+   * Selection Region
+   */
+  const selectedRows = rows.filter(allSelectedFilter)
+  const selectedCount = selectedRows.length
+
+  const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
+    const newRows = [...rows]
+    const selectedRow = newRows.find((row) => row.key === rowData.key) as IRow
+    selectedRow.selected = isSelected
+
+    setRows(newRows)
+  }
+
+  const onSelectPage = (isSelected: boolean) => {
+    const newRows = [...initialRows]
+    visibleRows.forEach((vR) => {
+      const selectedRow = newRows.find((nR) => vR.key === nR.key) as IRow
+      selectedRow.selected = isSelected
+    })
+    setRows(newRows)
+  }
 
   const onSelectAll = (selected: boolean = true) => {
     let newRows: (typeof initialRows)
@@ -138,17 +135,9 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     setRows(newRows)
   }
 
-  const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
-    const newRows = [...rows]
-    const selectedRow = newRows.find((row) => row.key === rowData.key) as IRow
-    selectedRow.selected = isSelected
-
-    setRows(newRows)
-  }
-
-  const [paginationState, dispatch] = usePaginationReducer()
-  const { startIdx, endIdx } = paginationState
-
+  /**
+   * Helper components definition Region
+   */
   const pagination = (
     <TablePagination
       itemCount={filteredRows.length}
@@ -157,46 +146,20 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
     />
   )
 
-  const visibleRows = useMemo(
-    () => filteredRows.slice(startIdx, endIdx),
-    [rows, activeFilter, startIdx, endIdx]
-  )
+  const searchEmptyState = [{
+    heightAuto: true,
+    cells: [{
+      props: { colSpan: 8 },
+      title: <TableEmptyState
+        title={t('accounts_table.empty_state_title')}
+        body={t('accounts_table.empty_state_body')}
+        button={<Button variant="link" onClick={clearFilters}>{t('accounts_table.empty_state_button')}</Button>}
+      />
+    }]
+  }]
 
-  const onSelectPage = (isSelected: boolean) => {
-    const newRows = [...initialRows]
-    visibleRows.forEach((vR) => {
-      const selectedRow = newRows.find((nR) => vR.key === nR.key) as IRow
-      selectedRow.selected = isSelected
-    })
-    setRows(newRows)
-  }
-
-  const selectedRows = rows.filter(allSelectedFilter)
-  const selectedCount = selectedRows.length
-
-  const onFilter = (term: string) => {
-    let newFilter: Filter
-
-    if (term === '') {
-      newFilter = allInFilter
-    } else {
-      // TODO: do actual filtering
-      newFilter = allInFilter
-    }
-
-    setActiveFilter(() => newFilter)
-  }
-
-  const clearFilters = () => setActiveFilter(() => allInFilter)
-
-  const tableEmptyStateRow = useMemo(() => CreateTableEmptyState(
-    t('accounts_table.empty_state_title'),
-    t('accounts_table.empty_state_body'),
-    <Button variant="link" onClick={clearFilters}>{t('accounts_table.empty_state_button')}</Button>
-  ), [t])
-
-  const dataToolbarItems = (
-    <>
+  const dataToolbar = (
+    <DataToolbar id="accounts-toolbar-top">
       <DataToolbarContent>
         <DataToolbarItem>
           <BulkSelector
@@ -220,16 +183,16 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           {pagination}
         </DataToolbarItem>
       </DataToolbarContent>
-    </>
+    </DataToolbar>
   )
 
   return (
     <>
       <Table
         aria-label={t('accounts_table.aria_label')}
-        header={<DataToolbar id="accounts-toolbar-top">{dataToolbarItems}</DataToolbar>}
+        header={dataToolbar}
         cells={columns}
-        rows={visibleRows.length ? visibleRows : tableEmptyStateRow}
+        rows={visibleRows.length ? visibleRows : searchEmptyState}
         onSelect={visibleRows.length ? onSelectOne : undefined}
         canSelectAll={false}
       >
@@ -246,7 +209,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
       {visibleModal === 'sendEmail' && (
         <SendEmailModal
-          isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[1]} (${(r.cells as string[])[0]})`)}
           onClose={() => setVisibleModal(undefined)}
         />
@@ -254,7 +216,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
       {visibleModal === 'changePlan' && (
         <ChangePlanModal
-          isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (Plan)`)}
           onClose={() => setVisibleModal(undefined)}
         />
@@ -262,7 +223,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
       {visibleModal === 'changeState' && (
         <ChangeStateModal
-          isOpen
           admins={selectedRows.map((r) => `${(r.cells as string[])[0]} (${(r.cells as string[])[4]})`)}
           onClose={() => setVisibleModal(undefined)}
         />

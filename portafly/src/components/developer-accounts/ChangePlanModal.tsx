@@ -16,13 +16,11 @@ import { useAlertsContext } from 'components/util'
 import { changePlan } from 'dal/accounts/bulkActions'
 
 interface IProps {
-  isOpen: boolean
   onClose: () => void
   admins: string[]
 }
 
 const ChangePlanModal: React.FunctionComponent<IProps> = ({
-  isOpen,
   onClose,
   admins
 }) => {
@@ -82,7 +80,7 @@ const ChangePlanModal: React.FunctionComponent<IProps> = ({
     <Modal
       width="44%"
       title={t('modals.change_plan.title')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       actions={actions}
       isFooterLeftAligned

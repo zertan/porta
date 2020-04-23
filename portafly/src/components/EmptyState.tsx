@@ -8,7 +8,6 @@ import {
   EmptyStateBody
 } from '@patternfly/react-core'
 import { CubesIcon, SearchIcon } from '@patternfly/react-icons'
-import { IRow } from '@patternfly/react-table'
 
 export interface ISimpleEmptyStateProps {
   msg: string
@@ -23,27 +22,29 @@ const SimpleEmptyState: React.FunctionComponent<ISimpleEmptyStateProps> = ({ msg
   </EmptyState>
 )
 
-type ICreateTableEmptyState = (title: string, body: string, button?: JSX.Element) => IRow[]
+interface ITableEmptyState {
+  title: string
+  body: string
+  button?: JSX.Element
+}
 
-const CreateTableEmptyState: ICreateTableEmptyState = (title, body, button) => [{
-  heightAuto: true,
-  cells: [{
-    props: { colSpan: 8 },
-    title: (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={SearchIcon} />
-          <Title headingLevel="h2" size="lg">
-            {title}
-          </Title>
-          <EmptyStateBody>
-            {body}
-          </EmptyStateBody>
-          {button}
-        </EmptyState>
-      </Bullseye>
-    )
-  }]
-}]
+const TableEmptyState: React.FunctionComponent<ITableEmptyState> = ({
+  title,
+  body,
+  button
+}) => (
+  <Bullseye>
+    <EmptyState variant={EmptyStateVariant.small}>
+      <EmptyStateIcon icon={SearchIcon} />
+      <Title headingLevel="h2" size="lg">
+        {title}
+      </Title>
+      <EmptyStateBody>
+        {body}
+      </EmptyStateBody>
+      {button}
+    </EmptyState>
+  </Bullseye>
+)
 
-export { SimpleEmptyState, CreateTableEmptyState }
+export { SimpleEmptyState, TableEmptyState }

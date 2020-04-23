@@ -18,13 +18,11 @@ import { sendEmail } from 'dal/accounts/bulkActions'
 import { useAlertsContext } from 'components/util'
 
 interface IProps {
-  isOpen: boolean
   admins: string[]
   onClose: () => void
 }
 
 const SendEmailModal: React.FunctionComponent<IProps> = ({
-  isOpen,
   onClose,
   admins
 }) => {
@@ -84,7 +82,7 @@ const SendEmailModal: React.FunctionComponent<IProps> = ({
     <Modal
       width="44%"
       title={t('modals.send_email.title')}
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       actions={actions}
       isFooterLeftAligned
