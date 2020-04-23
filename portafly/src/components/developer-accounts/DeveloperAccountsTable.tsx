@@ -68,7 +68,6 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
    */
   type Filter = (row: IRow) => boolean
   const allInFilter: Filter = () => true
-  const allSelectedFilter: Filter = (r) => (r.selected as boolean)
   const [activeFilter, setActiveFilter] = useState(() => allInFilter)
 
   const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
@@ -96,7 +95,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   /**
    * Selection Region
    */
-  const selectedRows = rows.filter(allSelectedFilter)
+  const selectedRows = rows.filter((r) => Boolean(r.selected))
   const selectedCount = selectedRows.length
 
   const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
@@ -159,7 +158,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   }]
 
   const dataToolbar = (
-    <DataToolbar id="accounts-toolbar-top">
+    <DataToolbar id="accounts-toolbar-top" clearAllFilters={() => console.log('clear all')}>
       <DataToolbarContent>
         <DataToolbarItem>
           <BulkSelector
