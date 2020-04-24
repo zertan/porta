@@ -124,7 +124,7 @@ exports[`when there are any accounts should render a table with accounts, none s
       class="pf-c-data-toolbar__item"
     >
       <div
-        class="pf-c-input-group"
+        class="pf-c-data-toolbar__group pf-m-filter-group"
       >
         <div
           class="pf-c-select"
@@ -180,6 +180,21 @@ exports[`when there are any accounts should render a table with accounts, none s
               />
             </svg>
           </button>
+        </div>
+        <div
+          class="pf-c-data-toolbar__item"
+        >
+          <span />
+        </div>
+        <div
+          class="pf-c-data-toolbar__item"
+        >
+          <span />
+        </div>
+        <div
+          class="pf-c-data-toolbar__item"
+        >
+          <span />
         </div>
         <div
           class="pf-c-input-group"
@@ -338,7 +353,7 @@ exports[`when there are any accounts should render a table with accounts, none s
     </div>
     <div
       class="pf-c-data-toolbar__expandable-content"
-      id="undefined-expandable-content-0"
+      id="accounts-toolbar-top-expandable-content-4"
     >
       <div
         class="pf-c-data-toolbar__group"

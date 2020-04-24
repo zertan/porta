@@ -45,6 +45,8 @@ accounts_table:
       select_aria_label_description: Aria label of the dropdown for filtering
       text_input_aria_label: Filter term input
       text_input_aria_label_description: Aria label of the text input for filtering
+      select_state_aria_label: Select state input
+      select_state_aria_label_description: Aria label of the select state input for filtering
       button_aria_label: Search button for input
       button_aria_label_description: Aria label of the button to filter
       placeholder: Filter by {{option}}

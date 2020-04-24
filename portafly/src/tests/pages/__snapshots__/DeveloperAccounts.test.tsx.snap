@@ -167,7 +167,7 @@ Object {
               class="pf-c-data-toolbar__item"
             >
               <div
-                class="pf-c-input-group"
+                class="pf-c-data-toolbar__group pf-m-filter-group"
               >
                 <div
                   class="pf-c-select"
@@ -223,6 +223,21 @@ Object {
                       />
                     </svg>
                   </button>
+                </div>
+                <div
+                  class="pf-c-data-toolbar__item"
+                >
+                  <span />
+                </div>
+                <div
+                  class="pf-c-data-toolbar__item"
+                >
+                  <span />
+                </div>
+                <div
+                  class="pf-c-data-toolbar__item"
+                >
+                  <span />
                 </div>
                 <div
                   class="pf-c-input-group"
@@ -381,7 +396,7 @@ Object {
             </div>
             <div
               class="pf-c-data-toolbar__expandable-content"
-              id="undefined-expandable-content-0"
+              id="accounts-toolbar-top-expandable-content-4"
             >
               <div
                 class="pf-c-data-toolbar__group"
@@ -636,7 +651,25 @@ Object {
                   class="pf-c-button pf-m-link"
                   type="button"
                 >
-                  Impersonate
+                  <span
+                    class="pf-c-button__icon"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
+                        transform=""
+                      />
+                    </svg>
+                  </span>
+                  accounts_table.actions.activate
                 </button>
               </td>
             </tr>
@@ -697,7 +730,25 @@ Object {
                   class="pf-c-button pf-m-link"
                   type="button"
                 >
-                  Impersonate
+                  <span
+                    class="pf-c-button__icon"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
+                        transform=""
+                      />
+                    </svg>
+                  </span>
+                  accounts_table.actions.activate
                 </button>
               </td>
             </tr>
@@ -851,9 +902,6 @@ Object {
         </div>
       </section>
     </div>
-    <div />
-    <div />
-    <div />
   </body>,
   "container": <div>
     <section
@@ -1018,7 +1066,7 @@ Object {
             class="pf-c-data-toolbar__item"
           >
             <div
-              class="pf-c-input-group"
+              class="pf-c-data-toolbar__group pf-m-filter-group"
             >
               <div
                 class="pf-c-select"
@@ -1074,6 +1122,21 @@ Object {
                     />
                   </svg>
                 </button>
+              </div>
+              <div
+                class="pf-c-data-toolbar__item"
+              >
+                <span />
+              </div>
+              <div
+                class="pf-c-data-toolbar__item"
+              >
+                <span />
+              </div>
+              <div
+                class="pf-c-data-toolbar__item"
+              >
+                <span />
               </div>
               <div
                 class="pf-c-input-group"
@@ -1232,7 +1295,7 @@ Object {
           </div>
           <div
             class="pf-c-data-toolbar__expandable-content"
-            id="undefined-expandable-content-0"
+            id="accounts-toolbar-top-expandable-content-4"
           >
             <div
               class="pf-c-data-toolbar__group"
@@ -1487,7 +1550,25 @@ Object {
                 class="pf-c-button pf-m-link"
                 type="button"
               >
-                Impersonate
+                <span
+                  class="pf-c-button__icon"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+                accounts_table.actions.activate
               </button>
             </td>
           </tr>
@@ -1548,7 +1629,25 @@ Object {
                 class="pf-c-button pf-m-link"
                 type="button"
               >
-                Impersonate
+                <span
+                  class="pf-c-button__icon"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+                accounts_table.actions.activate
               </button>
             </td>
           </tr>

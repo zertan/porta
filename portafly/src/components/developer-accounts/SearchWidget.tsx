@@ -13,13 +13,18 @@ import { FilterIcon, SearchIcon } from '@patternfly/react-icons'
 import { useTranslation } from 'i18n/useTranslation'
 import { DataToolbarFilter, DataToolbarGroup, DataToolbarChip } from '@patternfly/react-core/dist/js/experimental'
 
+import './searchWidget.scss'
+
 interface ISearch {
-  onFilter: (term: string, filterBy: string) => void
+  filters: Record<string, string[] | undefined>,
+  onFiltersChange: React.Dispatch<React.SetStateAction<Record<string, string[]>>>
 }
 
-const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
+const SearchWidget: React.FunctionComponent<ISearch> = ({
+  filters,
+  onFiltersChange
+}) => {
   const { t } = useTranslation('accounts')
-  console.log(onFilter)
 
   const group = t('accounts_table.col_group')
   const admin = t('accounts_table.col_admin')
@@ -28,11 +33,6 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
 
   const [isCategorySelectExpanded, setIsCategorySelectExpanded] = useState(false)
   const [isStateSelectExpanded, setIsStateSelectExpanded] = useState(false)
-  const [chips, setChips] = useState<Record<string, string[]>>({
-    [group]: [],
-    [admin]: [],
-    [state]: []
-  })
   const [filterBy, setFilterBy] = useState(categories[0])
   const textInputRef = useRef<HTMLInputElement>(null)
 
@@ -45,13 +45,18 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
 
   // TODO: prevent adding the same term twice for categories: group and admin
   const addChip = (category: string, term: string) => {
-    const newCategoryChips = [...chips[category], term]
-    setChips({ ...chips, [category]: newCategoryChips })
+    onFiltersChange((prevFilters) => {
+      const prevCatChips = prevFilters[category] || []
+      const newCategoryChips = [...prevCatChips, term]
+      return { ...prevFilters, [category]: newCategoryChips }
+    })
   }
 
-  const removeSelection = (category: string, chip: string | DataToolbarChip) => {
-    const newCategoryChips = chips[category].filter((s) => s !== chip)
-    setChips({ ...chips, [category]: newCategoryChips })
+  const removeSelection = (category: string, filter: string | DataToolbarChip) => {
+    onFiltersChange((prevFilters) => {
+      const newCategoryChips = prevFilters[category]?.filter((s) => s !== filter)
+      return { ...prevFilters, [category]: newCategoryChips }
+    })
   }
 
   const onSelectState = (ev: any, selection: string | SelectOptionObject) => {
@@ -74,13 +79,13 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
   const dataToolbarFilters = useMemo(() => categories.map((o) => (
     <DataToolbarFilter
       key={o}
-      chips={chips[o]}
+      chips={filters[o]}
       deleteChip={removeSelection}
       categoryName={o}
     >
       <span />
     </DataToolbarFilter>
-  )), [chips])
+  )), [filters])
 
 
   const searchBar = (
@@ -105,12 +110,12 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({ onFilter }) => {
   const stateSelect = (
     <Select
       variant={SelectVariant.checkbox}
-      aria-label="Status"
+      aria-label={t('accounts_table.data_toolbar.search_widget.select_state_aria_label')}
       onSelect={onSelectState}
-      selections={chips[state]}
+      selections={filters[state]}
       isExpanded={isStateSelectExpanded}
       onToggle={setIsStateSelectExpanded}
-      placeholderText="Status"
+      placeholderText={t('accounts_table.data_toolbar.search_widget.placeholder', { option: filterBy.toLowerCase() })}
     >
       <SelectOption key="approved" value="Approved" />
       <SelectOption key="pending" value="Pending" />

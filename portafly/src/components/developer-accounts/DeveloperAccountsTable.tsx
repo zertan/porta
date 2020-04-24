@@ -66,30 +66,29 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   /**
    * Filtering Region
    */
-  type Filter = (row: IRow) => boolean
-  const allInFilter: Filter = () => true
-  const [activeFilter, setActiveFilter] = useState(() => allInFilter)
+  const [filters, setFilters] = useState<Record<string, string[]>>({})
 
-  const filteredRows = useMemo(() => rows.filter(activeFilter), [rows, activeFilter])
+  const clearAllFilters = () => setFilters({})
 
-  const onFilter = (term: string) => {
-    let newFilter: Filter
+  const filteredRows = useMemo(() => {
+    let newRows = [...rows]
 
-    if (term === '') {
-      newFilter = allInFilter
-    } else {
-      // TODO: do actual filtering
-      newFilter = allInFilter
-    }
+    Object.keys(filters).forEach((category) => {
+      if (newRows.length === 0 || filters[category].length === 0) return
 
-    setActiveFilter(() => newFilter)
-  }
+      const colIdx = columns.findIndex((c) => c.title === category)
+      newRows = newRows.filter((r) => {
+        const value = (r.cells as string[])[colIdx].toLowerCase()
+        return filters[category].some((f) => value.indexOf(f.toLowerCase()) > -1)
+      })
+    })
 
-  const clearFilters = () => setActiveFilter(() => allInFilter)
+    return newRows
+  }, [rows, filters])
 
   const visibleRows = useMemo(
     () => filteredRows.slice(startIdx, endIdx),
-    [rows, activeFilter, startIdx, endIdx]
+    [filteredRows, startIdx, endIdx]
   )
 
   /**
@@ -152,13 +151,13 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
       title: <TableEmptyState
         title={t('accounts_table.empty_state_title')}
         body={t('accounts_table.empty_state_body')}
-        button={<Button variant="link" onClick={clearFilters}>{t('accounts_table.empty_state_button')}</Button>}
+        button={<Button variant="link" onClick={clearAllFilters}>{t('accounts_table.empty_state_button')}</Button>}
       />
     }]
   }]
 
   const dataToolbar = (
-    <DataToolbar id="accounts-toolbar-top" clearAllFilters={() => console.log('clear all')}>
+    <DataToolbar id="accounts-toolbar-top" clearAllFilters={clearAllFilters}>
       <DataToolbarContent>
         <DataToolbarItem>
           <BulkSelector
@@ -176,7 +175,7 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
           />
         </DataToolbarItem>
         <DataToolbarItem>
-          <SearchWidget onFilter={onFilter} />
+          <SearchWidget filters={filters} onFiltersChange={setFilters} />
         </DataToolbarItem>
         <DataToolbarItem variant="pagination" breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
           {pagination}

@@ -49,7 +49,7 @@ describe('when there are any accounts', () => {
 
     const bulkSelectorCheckbox = wrapper.getByTestId('developer-accounts-bulk-checkbox')
     fireEvent.click(bulkSelectorCheckbox)
-
+    wrapper.debug(checkboxes)
     expect(checkboxes.filter(isChecked).length).toEqual(0)
   })
 })

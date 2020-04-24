@@ -7,7 +7,7 @@ import { RenderResult, fireEvent } from '@testing-library/react'
 let wrapper: RenderResult
 
 beforeEach(() => {
-  wrapper = render(<SearchWidget onFilter={jest.fn()} />)
+  wrapper = render(<SearchWidget onChangeFilters={jest.fn()} />)
 })
 
 it('should render properly', () => {
