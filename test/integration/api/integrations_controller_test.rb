@@ -209,6 +209,35 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'api_done', provider.reload.onboarding.bubble_api_state
   end
 
+  test 'update production should change deployment bubble state to done' do
+    skip 'TODO WIP'
+
+    provider.create_onboarding
+    FactoryBot.create(:service_token, service: service)
+
+    rolling_updates_on
+    service.proxy.update_column :api_backend, 'http://some-api.example.com'
+
+    put :update_production, proxy: { api_backend: 'http://some-api.example.com:443'}, service_id: service.id
+    assert_response :redirect
+
+    assert_equal 'deployment_done', provider.reload.onboarding.bubble_deployment_state
+  end
+
+  test 'download nginx config' do
+    get admin_service_integration_path(service_id: service.id, format: :zip)
+
+    assert_response :success
+    assert_equal 'application/zip', response.content_type
+    assert_includes response.headers, 'Content-Transfer-Encoding', 'Content-Disposition'
+    assert_equal 'attachment; filename="proxy_configs.zip"', response['Content-Disposition']
+    assert_equal 'binary', response['Content-Transfer-Encoding']
+
+    Zip::InputStream.open(StringIO.new(response.body)) do |zip|
+      assert zip.get_next_entry
+    end
+  end
+
   private
 
   def service

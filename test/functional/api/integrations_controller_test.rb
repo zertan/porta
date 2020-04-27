@@ -14,32 +14,9 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
 
 
 
-  
 
-  test 'update production should change deployment bubble state to done' do
-    @provider.create_onboarding
 
-    @provider.default_service.proxy.update_column :api_backend, 'http://some-api.example.com'
 
-    put :update_production, proxy: { api_backend: 'http://some-api.example.com:443'}, service_id: @provider.default_service.id
-    assert_response :redirect
-
-    assert_equal 'deployment_done', @provider.reload.onboarding.bubble_deployment_state
-  end
-
-  test 'download nginx config' do
-    get :show, format: :zip, service_id: @provider.default_service.id
-
-    assert_response :success
-    assert_equal 'application/zip', response.content_type
-    assert_includes response.headers, 'Content-Transfer-Encoding', 'Content-Disposition'
-    assert_equal 'attachment; filename="proxy_configs.zip"', response['Content-Disposition']
-    assert_equal 'binary', response['Content-Transfer-Encoding']
-
-    Zip::InputStream.open(StringIO.new(response.body)) do |zip|
-      assert zip.get_next_entry
-    end
-  end
 
   test 'download nginx config should change deployment bubble state to done' do
     @provider.create_onboarding
