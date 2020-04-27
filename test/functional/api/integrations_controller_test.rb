@@ -45,22 +45,9 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
     assert_equal 'http://example.com:80', proxy.reload.endpoint
   end
 
+
+
   
-
-  test 'create proxy config with proxy_pro enabled' do
-    rolling_updates_off
-
-    proxy = @provider.default_service.proxy
-    proxy.update_column(:apicast_configuration_driven, true)
-
-    Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
-    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
-
-    assert_difference proxy.proxy_configs.method(:count) do
-      put :update, proxy: { endpoint: 'http://example.com' }, service_id: @provider.default_service.id
-      assert_response :redirect
-    end
-  end
 
   test 'cannot update custom public endpoint when configuration-driven APIcast does not support custom URL through ENV' do
     Logic::RollingUpdates.stubs(:enabled? => true)

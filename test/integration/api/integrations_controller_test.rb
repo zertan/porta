@@ -80,6 +80,20 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'http://example.com:80', service.proxy.reload.endpoint
   end
 
+  test 'create proxy config with proxy_pro enabled' do
+    skip 'TODO WIP'
+
+    service.proxy.update_column(:apicast_configuration_driven, true)
+
+    Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
+    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
+
+    assert_difference service.proxy.proxy_configs.method(:count) do
+      put admin_service_integration_path(service_id: service.id), proxy: {endpoint: 'http://example.com'}
+      assert_response :redirect
+    end
+  end
+
   def test_update_proxy_rule_position
     ProxyDeploymentService.any_instance.expects(:deploy_v2).returns(true).times(3)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
