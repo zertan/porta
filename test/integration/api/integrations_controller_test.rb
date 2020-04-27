@@ -22,35 +22,31 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     member.activate!
     login! provider, user: member
 
-    get edit_admin_service_integration_path(service_id: provider.default_service.id)
+    get edit_admin_service_integration_path(service_id: service.id)
     assert_response 403
 
     member.member_permissions.create!(admin_section: 'plans')
-    get edit_admin_service_integration_path(service_id: provider.default_service.id)
+    get edit_admin_service_integration_path(service_id: service.id)
     assert_response 200
   end
 
   def test_index
-    get admin_service_integration_path(service_id: provider.default_service.id)
+    get admin_service_integration_path(service_id: service.id)
     assert_response :success
     assert assigns(:show_presenter)
   end
 
-  def test_promote_to_production_error
-    service = FactoryBot.create(:simple_service, account: provider)
-
+  def test_promote_to_production_success
     ProxyDeploymentService.any_instance.expects(:deploy_production).returns(true).once
-    patch promote_to_production_admin_service_integration_path(service_id: service)
+    patch promote_to_production_admin_service_integration_path(service_id: service.id)
     assert_response :redirect
     assert_not_nil flash[:notice]
     assert_nil flash[:error]
   end
 
-  def test_promote_to_production_success
-    service = FactoryBot.create(:simple_service, account: provider)
-
+  def test_promote_to_production_error
     ProxyDeploymentService.any_instance.expects(:deploy_production).returns(false).once
-    patch promote_to_production_admin_service_integration_path(service_id: service)
+    patch promote_to_production_admin_service_integration_path(service_id: service.id)
     assert_response :redirect
     assert_nil flash[:notice]
     assert_not_nil flash[:error]
@@ -59,7 +55,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   def test_update
     ProxyDeploymentService.any_instance.stubs(:deploy).returns(true)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
-    service = provider.services.first
     proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy, last: false)
 
     refute proxy_rule_1.last
@@ -68,7 +63,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
         proxy_rule_1.id => { id: proxy_rule_1.id, last: true }
       }
     }
-    put admin_service_integration_path(service_id: service), proxy: proxy_rules_attributes
+    put admin_service_integration_path(service_id: service.id), proxy: proxy_rules_attributes
     assert_response :redirect
     assert proxy_rule_1.reload.last
   end
@@ -77,7 +72,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     ProxyDeploymentService.any_instance.expects(:deploy_v2).returns(true).times(3)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
 
-    service = provider.services.first
     service.proxy.proxy_rules.destroy_all
     proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
     proxy_rule_2 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
@@ -90,7 +84,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
         proxy_rule_2.id => { id: proxy_rule_2.id, position: 1 }
       }
     }
-    put admin_service_integration_path(service_id: service), proxy: proxy_rules_attributes
+    put admin_service_integration_path(service_id: service.id), proxy: proxy_rules_attributes
     assert_response :redirect
 
     proxy_rule_1.reload
@@ -104,7 +98,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
         proxy_rule_1.id => { id: proxy_rule_1.id, position: 1 }
       }
     }
-    put admin_service_integration_path(service_id: service), proxy: proxy_rules_attributes
+    put admin_service_integration_path(service_id: service.id), proxy: proxy_rules_attributes
     assert_response :redirect
 
     proxy_rule_1.reload
@@ -121,7 +115,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
         proxy_rule_1.id => { id: proxy_rule_1.id, position: 4 }
       }
     }
-    put admin_service_integration_path(service_id: service), proxy: proxy_rules_attributes
+    put admin_service_integration_path(service_id: service.id), proxy: proxy_rules_attributes
     assert_response :redirect
 
     proxy_rule_1.reload
@@ -135,7 +129,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   test 'deploy is called when saving proxy info' do
     Proxy.any_instance.expects(:save_and_deploy).once
 
-    put admin_service_integration_path(service_id: provider.default_service.id), proxy: {api_backend: '1'}
+    put admin_service_integration_path(service_id: service.id), proxy: {api_backend: '1'}
   end
 
   test 'deploy is never called when saving proxy info for proxy pro users' do
@@ -149,7 +143,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     ProxyTestService.any_instance.expects(:perform).never
     Policies::PoliciesListService.expects(:call!)
 
-    service = provider.default_service
     service.update_column(:deployment_option, 'self_managed')
     service.proxy.update_column(:apicast_configuration_driven, false)
 
@@ -160,7 +153,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     get edit_admin_service_integration_path(service_id: 'no-such-service')
     assert_response :not_found
 
-    service = FactoryBot.create(:simple_service, account: provider)
     get edit_admin_service_integration_path(service_id: service.id)
     assert_response :success
   end
@@ -187,7 +179,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_example_curl
-    service = provider.default_service
     FactoryBot.create(:service_token, service: service)
     FactoryBot.create(:proxy_config, proxy: service.proxy, environment: 'sandbox')
     Api::IntegrationsShowPresenter.any_instance.expects(:apicast_config_ready?).returns(true).at_least_once
@@ -202,5 +193,11 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     get admin_service_integration_path(service_id: service.id)
     assert_response :success
     assert_match 'Example curl for testing', response.body
+  end
+
+  private
+
+  def service
+    @service ||= provider.default_service
   end
 end
