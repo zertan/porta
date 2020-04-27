@@ -8,13 +8,15 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
 
     stub_apicast_registry
 
-    login! @provider
+    login! provider
 
     rolling_updates_off
   end
 
+  attr_reader :provider
+
   def test_index
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
 
     get admin_service_integration_path(service_id: service)
     assert_response :success
@@ -22,7 +24,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_promote_to_production_error
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
 
     ProxyDeploymentService.any_instance.expects(:deploy_production).returns(true).once
     patch promote_to_production_admin_service_integration_path(service_id: service)
@@ -32,7 +34,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_promote_to_production_success
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
 
     ProxyDeploymentService.any_instance.expects(:deploy_production).returns(false).once
     patch promote_to_production_admin_service_integration_path(service_id: service)
@@ -44,7 +46,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   def test_update
     ProxyDeploymentService.any_instance.stubs(:deploy).returns(true)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
-    service = @provider.services.first
+    service = provider.services.first
     proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy, last: false)
 
     refute proxy_rule_1.last
@@ -62,7 +64,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     ProxyDeploymentService.any_instance.expects(:deploy_v2).returns(true).times(3)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
 
-    service = @provider.services.first
+    service = provider.services.first
     service.proxy.proxy_rules.destroy_all
     proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
     proxy_rule_2 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
@@ -120,7 +122,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   test 'deploy is called when saving proxy info' do
     Proxy.any_instance.expects(:save_and_deploy).once
 
-    put admin_service_integration_path(service_id: @provider.default_service.id), proxy: {api_backend: '1'}
+    put admin_service_integration_path(service_id: provider.default_service.id), proxy: {api_backend: '1'}
   end
 
   test 'deploy is never called when saving proxy info for proxy pro users' do
@@ -134,7 +136,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     ProxyTestService.any_instance.expects(:perform).never
     Policies::PoliciesListService.expects(:call!)
 
-    service = @provider.default_service
+    service = provider.default_service
     service.update_column(:deployment_option, 'self_managed')
     service.proxy.update_column(:apicast_configuration_driven, false)
 
@@ -145,14 +147,14 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     get edit_admin_service_integration_path(service_id: 'no-such-service')
     assert_response :not_found
 
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
     get edit_admin_service_integration_path(service_id: service.id)
     assert_response :success
   end
 
 
   test 'update OIDC Authorization flows' do
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
     ProxyTestService.any_instance.stubs(disabled?: true)
     put admin_service_integration_path(service_id: service.id, proxy: {oidc_configuration_attributes: {standard_flow_enabled: false, direct_access_grants_enabled: true}})
     assert_response :redirect
@@ -166,13 +168,13 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     rolling_updates_on
     Account.any_instance.expects(:provider_can_use?).with(:api_as_product).returns(true)
 
-    service = FactoryBot.create(:simple_service, account: @provider)
+    service = FactoryBot.create(:simple_service, account: provider)
     get edit_admin_service_integration_path(service_id: service.id)
     assert_response :not_found
   end
 
   def test_example_curl
-    service = @provider.default_service
+    service = provider.default_service
     FactoryBot.create(:service_token, service: service)
     FactoryBot.create(:proxy_config, proxy: service.proxy, environment: 'sandbox')
     Api::IntegrationsShowPresenter.any_instance.expects(:apicast_config_ready?).returns(true).at_least_once
