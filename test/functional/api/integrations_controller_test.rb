@@ -11,30 +11,6 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
     login_provider @provider
   end
 
-  test "should not have access" do
-    member = FactoryBot.create(:member)
-    @provider.users << member
-    host! @provider.admin_domain
-    login_as member
-    get :edit, service_id: @provider.default_service.id
-    assert_response 403
-  end
-
-
-  test 'should have access' do
-    rolling_updates_off
-
-    member = FactoryBot.create(:member)
-    member.member_permissions.create(admin_section: 'plans')
-    @provider.users << member
-    host! @provider.admin_domain
-    login_as member
-
-    Service.any_instance.stubs(proxiable?: false) # Stub not related with the test, just to skip a render view error
-
-    get :edit, service_id: @provider.default_service.id
-    assert_response 200
-  end
 
   test 'put update to deploy to production' do
     host! @provider.admin_domain

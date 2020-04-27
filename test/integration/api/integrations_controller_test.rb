@@ -15,6 +15,21 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
 
   attr_reader :provider
 
+  test 'member user should have access only if it has admin_section "plans"' do
+    Service.any_instance.stubs(proxiable?: false) # Stub not related with the test, just to skip a render view error
+
+    member = FactoryBot.create(:member, account: provider)
+    member.activate!
+    login! provider, user: member
+
+    get edit_admin_service_integration_path(service_id: provider.default_service.id)
+    assert_response 403
+
+    member.member_permissions.create!(admin_section: 'plans')
+    get edit_admin_service_integration_path(service_id: provider.default_service.id)
+    assert_response 200
+  end
+
   def test_index
     service = FactoryBot.create(:simple_service, account: provider)
 
