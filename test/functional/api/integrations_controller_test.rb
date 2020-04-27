@@ -45,10 +45,6 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
     assert_equal 'http://example.com:80', proxy.reload.endpoint
   end
 
-
-
-  
-
   test 'cannot update custom public endpoint when configuration-driven APIcast does not support custom URL through ENV' do
     Logic::RollingUpdates.stubs(:enabled? => true)
     Proxy.any_instance.stubs(deploy: true)
