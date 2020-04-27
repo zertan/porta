@@ -12,14 +12,7 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
   end
 
 
-  test 'put update to deploy to production' do
-    host! @provider.admin_domain
-    login_provider @provider
-
-    ProxyDeploymentService.any_instance.expects(:deploy_production).once
-    patch :update_production, service_id: @provider.default_service.id
-    assert_response :redirect
-  end
+  
 
   test 'update should change api bubble state to done' do
     @provider.create_onboarding
