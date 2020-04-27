@@ -157,7 +157,6 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-
   test 'update OIDC Authorization flows' do
     service = FactoryBot.create(:simple_service, account: provider)
     ProxyTestService.any_instance.stubs(disabled?: true)
