@@ -195,6 +195,21 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert_match 'Example curl for testing', response.body
   end
 
+  test 'update should change api bubble state to done' do
+    provider.create_onboarding
+    FactoryBot.create(:service_token, service: service)
+
+    rolling_updates_on
+    Account.any_instance.expects(:provider_can_use?).returns(false).at_least_once
+    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
+    Proxy.any_instance.stubs(:deploy).returns(true)
+
+    put admin_service_integration_path proxy: {api_backend: 'http://some-api.example.com:443'}, service_id: service.id
+    assert_response :redirect
+
+    assert_equal 'api_done', provider.reload.onboarding.bubble_api_state
+  end
+
   private
 
   def service

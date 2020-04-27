@@ -12,20 +12,9 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
   end
 
 
+
+
   
-
-  test 'update should change api bubble state to done' do
-    @provider.create_onboarding
-
-    Account.any_instance.expects(:provider_can_use?).returns(false).at_least_once
-    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
-    Proxy.any_instance.stubs(:deploy).returns(true)
-
-    put :update, proxy: {api_backend: 'http://some-api.example.com:443'}, service_id: @provider.default_service.id
-    assert_response :redirect
-
-    assert_equal 'api_done', @provider.reload.onboarding.bubble_api_state
-  end
 
   test 'update production should change deployment bubble state to done' do
     @provider.create_onboarding
