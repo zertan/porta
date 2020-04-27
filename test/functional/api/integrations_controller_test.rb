@@ -16,17 +16,6 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
 
 
 
-
-
-  test 'download nginx config should change deployment bubble state to done' do
-    @provider.create_onboarding
-
-    get :show, format: :zip, service_id: @provider.default_service.id
-
-    assert_response :success
-    assert_equal 'deployment_done', @provider.reload.onboarding.bubble_deployment_state
-  end
-
   test 'cannot update custom public endpoint when using APIcast' do
     Logic::RollingUpdates.stubs(:enabled? => true)
     Proxy.any_instance.stubs(deploy: true)
