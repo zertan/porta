@@ -55,7 +55,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   def test_update
     ProxyDeploymentService.any_instance.stubs(:deploy).returns(true)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
-    proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy, last: false)
+    proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: proxy, last: false)
 
     refute proxy_rule_1.last
     proxy_rules_attributes = {
@@ -72,23 +72,23 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     Proxy.any_instance.stubs(deploy: true)
     ProxyTestService.any_instance.stubs(:disabled?).returns(true)
 
-    service.proxy.update_column(:endpoint, 'https://endpoint.com:8443')
+    proxy.update_column(:endpoint, 'https://endpoint.com:8443')
 
     Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
     # call update as proxy_pro updates endpoint through staging section
     put admin_service_integration_path(service_id: service.id), proxy: {endpoint: 'http://example.com:80'}
-    assert_equal 'http://example.com:80', service.proxy.reload.endpoint
+    assert_equal 'http://example.com:80', proxy.reload.endpoint
   end
 
   test 'create proxy config with proxy_pro enabled' do
     skip 'TODO WIP'
 
-    service.proxy.update_column(:apicast_configuration_driven, true)
+    proxy.update_column(:apicast_configuration_driven, true)
 
     Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
     ProxyTestService.any_instance.stubs(:disabled?).returns(true)
 
-    assert_difference service.proxy.proxy_configs.method(:count) do
+    assert_difference proxy.proxy_configs.method(:count) do
       put admin_service_integration_path(service_id: service.id), proxy: {endpoint: 'http://example.com'}
       assert_response :redirect
     end
@@ -98,9 +98,9 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     ProxyDeploymentService.any_instance.expects(:deploy_v2).returns(true).times(3)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
 
-    service.proxy.proxy_rules.destroy_all
-    proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
-    proxy_rule_2 = FactoryBot.create(:proxy_rule, proxy: service.proxy)
+    proxy.proxy_rules.destroy_all
+    proxy_rule_1 = FactoryBot.create(:proxy_rule, proxy: proxy)
+    proxy_rule_2 = FactoryBot.create(:proxy_rule, proxy: proxy)
 
     # sending both proxy rules
     assert_not_equal 1, proxy_rule_2.position
@@ -170,7 +170,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     Policies::PoliciesListService.expects(:call!)
 
     service.update_column(:deployment_option, 'self_managed')
-    service.proxy.update_column(:apicast_configuration_driven, false)
+    proxy.update_column(:apicast_configuration_driven, false)
 
     put admin_service_integration_path(service_id: service.id), proxy: {api_backend: '1'}
   end
@@ -190,8 +190,8 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
 
     service.reload
-    refute service.proxy.oidc_configuration.standard_flow_enabled
-    assert service.proxy.oidc_configuration.direct_access_grants_enabled
+    refute proxy.oidc_configuration.standard_flow_enabled
+    assert proxy.oidc_configuration.direct_access_grants_enabled
   end
 
   test 'edit not found for apiap' do
@@ -205,7 +205,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
 
   def test_example_curl
     FactoryBot.create(:service_token, service: service)
-    FactoryBot.create(:proxy_config, proxy: service.proxy, environment: 'sandbox')
+    FactoryBot.create(:proxy_config, proxy: proxy, environment: 'sandbox')
     Api::IntegrationsShowPresenter.any_instance.expects(:apicast_config_ready?).returns(true).at_least_once
     Api::IntegrationsShowPresenter.any_instance.expects(:any_sandbox_configs?).returns(true).at_least_once
 
@@ -242,7 +242,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     FactoryBot.create(:service_token, service: service)
 
     rolling_updates_on
-    service.proxy.update_column :api_backend, 'http://some-api.example.com'
+    proxy.update_column :api_backend, 'http://some-api.example.com'
 
     put :update_production, proxy: { api_backend: 'http://some-api.example.com:443'}, service_id: service.id
     assert_response :redirect
@@ -272,5 +272,9 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
 
   def service
     @service ||= provider.default_service
+  end
+
+  def proxy
+    @proxy ||= service.proxy
   end
 end
