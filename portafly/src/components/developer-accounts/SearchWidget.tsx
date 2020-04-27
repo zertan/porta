@@ -59,7 +59,7 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({
     })
   }
 
-  const onSelectState = (ev: any, selection: string | SelectOptionObject) => {
+  const onSelectState = (ev: React.SyntheticEvent, selection: string | SelectOptionObject) => {
     const { checked } = ev.currentTarget as HTMLInputElement
 
     if (checked) {

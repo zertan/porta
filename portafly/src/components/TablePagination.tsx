@@ -70,7 +70,7 @@ type PaginationAction = {
   payload: Partial<PaginationState>
 }
 
-export const paginationReducer = (state: PaginationState, action: PaginationAction):
+const paginationReducer = (state: PaginationState, action: PaginationAction):
 PaginationState => {
   switch (action.type) {
     case 'setPage':
@@ -81,11 +81,11 @@ PaginationState => {
   }
 }
 
-export const usePaginationReducer = () => useReducer(paginationReducer, {
+const usePaginationReducer = () => useReducer(paginationReducer, {
   page: 0,
   perPage: perPageOptions[0].value,
   startIdx: 0,
   endIdx: perPageOptions[0].value
 })
 
-export { TablePagination }
+export { TablePagination, usePaginationReducer }

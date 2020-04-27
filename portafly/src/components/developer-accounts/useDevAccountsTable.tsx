@@ -64,7 +64,6 @@ const useDevAccountsTable = (accounts: IDeveloperAccount[], isMultitenant = fals
     ]
   ]
 
-  console.log('creating initial rows')
   const initialRows: Array<IRow & { key: string }> = accounts.map((a) => ({
     key: String(a.id),
     cells: mapAccountToRowCell(a),
