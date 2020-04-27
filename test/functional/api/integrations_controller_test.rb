@@ -45,20 +45,7 @@ class Api::IntegrationsControllerTest < ActionController::TestCase
     assert_equal 'http://example.com:80', proxy.reload.endpoint
   end
 
-  test 'update custom public endpoint with proxy_pro enabled' do
-    rolling_updates_off
-
-    Proxy.any_instance.stubs(deploy: true)
-    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
-
-    proxy = @provider.default_service.proxy
-    proxy.update_column(:endpoint, 'https://endpoint.com:8443')
-
-    Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
-    # call update as proxy_pro updates endpoint through staging section
-    put :update, proxy: {endpoint: 'http://example.com:80'}, service_id: @provider.default_service.id
-    assert_equal 'http://example.com:80', proxy.reload.endpoint
-  end
+  
 
   test 'create proxy config with proxy_pro enabled' do
     rolling_updates_off

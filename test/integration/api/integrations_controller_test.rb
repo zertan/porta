@@ -68,6 +68,18 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
     assert proxy_rule_1.reload.last
   end
 
+  test 'update custom public endpoint with proxy_pro enabled' do
+    Proxy.any_instance.stubs(deploy: true)
+    ProxyTestService.any_instance.stubs(:disabled?).returns(true)
+
+    service.proxy.update_column(:endpoint, 'https://endpoint.com:8443')
+
+    Service.any_instance.expects(:using_proxy_pro?).returns(true).at_least_once
+    # call update as proxy_pro updates endpoint through staging section
+    put admin_service_integration_path(service_id: service.id), proxy: {endpoint: 'http://example.com:80'}
+    assert_equal 'http://example.com:80', service.proxy.reload.endpoint
+  end
+
   def test_update_proxy_rule_position
     ProxyDeploymentService.any_instance.expects(:deploy_v2).returns(true).times(3)
     Proxy.any_instance.stubs(:send_api_test_request!).returns(true)
