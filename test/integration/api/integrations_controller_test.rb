@@ -31,9 +31,7 @@ class IntegrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_index
-    service = FactoryBot.create(:simple_service, account: provider)
-
-    get admin_service_integration_path(service_id: service)
+    get admin_service_integration_path(service_id: provider.default_service.id)
     assert_response :success
     assert assigns(:show_presenter)
   end
