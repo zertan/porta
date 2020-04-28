@@ -12,7 +12,7 @@ describe('when the request is pending', () => {
 
   it('should render spinner', () => {
     const wrapper = render(<DeveloperAccounts />)
-    expect(wrapper).toMatchSnapshot()
+    expect(wrapper.container.firstChild).toMatchSnapshot()
   })
 })
 
@@ -21,7 +21,7 @@ describe('when backend returns an error', () => {
 
   it('should render an alert', () => {
     const wrapper = render(<DeveloperAccounts />)
-    expect(wrapper).toMatchSnapshot()
+    expect(wrapper.container.firstChild).toMatchSnapshot()
   })
 })
 
@@ -30,6 +30,6 @@ describe('when backend returns a list of accounts', () => {
 
   it('should render a table with accounts', () => {
     const wrapper = render(<DeveloperAccounts />)
-    expect(wrapper).toMatchSnapshot()
+    expect(wrapper.container.firstChild).toMatchSnapshot()
   })
 })

@@ -4,5 +4,5 @@ import { render } from 'tests/custom-render'
 
 it('renders without crashing', () => {
   const wrapper = render(<App />)
-  expect(wrapper).not.toBeNull()
+  expect(wrapper.container.firstChild).not.toBeNull()
 })
