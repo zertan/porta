@@ -484,7 +484,7 @@ GEM
     polyamorous (1.3.3)
       activerecord (>= 3.0)
     powerpack (0.1.2)
-    prawn-format (0.2.1)
+    prawn-format (0.2.3)
       prawn-core
     prawn-layout (0.2.1)
     prometheus-client-mmap (0.10.0)
@@ -746,7 +746,7 @@ GEM
       parslet (~> 1.8.0)
     ts-datetime-delta (2.0.2)
       thinking-sphinx (>= 1.3.8)
-    ttfunk (1.5.1)
+    ttfunk (1.6.2.1)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uber (0.0.15)
@@ -888,7 +888,7 @@ DEPENDENCIES
   pg (~> 0.21.0)
   pisoni (~> 1.29)
   prawn-core!
-  prawn-format (= 0.2.1)
+  prawn-format (= 0.2.3)
   prawn-layout (= 0.2.1)
   prometheus-client-mmap
   protected_attributes_continued (~> 1.3.0)
