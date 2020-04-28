@@ -1,11 +1,19 @@
 import React from 'react'
-import { Brand } from '@patternfly/react-core'
+import {
+  Brand,
+  Button,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem
+} from '@patternfly/react-core'
 import { useTranslation } from 'i18n/useTranslation'
 import { useHistory } from 'react-router-dom'
-import { AppLayout } from 'components'
+import { AppLayout, useAlertsContext } from 'components'
+import { BellIcon } from '@patternfly/react-icons'
 import logo from 'assets/logo.svg'
 
 const Root: React.FunctionComponent = ({ children }) => {
+  const { addAlert } = useAlertsContext()
   const { t } = useTranslation('shared')
   const Logo = <Brand src={logo} alt={t('logo_alt_text')} />
 
@@ -53,6 +61,27 @@ const Root: React.FunctionComponent = ({ children }) => {
     }),
     [history]
   )
+
+  const pageToolbar = (
+    <Toolbar>
+      <ToolbarGroup>
+        <ToolbarItem>
+          <Button
+            id="default-example-uid-01"
+            aria-label="Notifications actions"
+            variant="plain"
+            onClick={() => {
+              const key = String(Date.now())
+              addAlert({ key, title: `Alert ${key}`, variant: 'info' })
+            }}
+          >
+            <BellIcon />
+          </Button>
+        </ToolbarItem>
+      </ToolbarGroup>
+    </Toolbar>
+  )
+
   return (
     <AppLayout
       logo={Logo}
@@ -60,6 +89,7 @@ const Root: React.FunctionComponent = ({ children }) => {
       navVariant="vertical"
       navItems={navItems}
       navGroupsStyle="expandable"
+      toolbar={pageToolbar}
     >
       {children}
     </AppLayout>
