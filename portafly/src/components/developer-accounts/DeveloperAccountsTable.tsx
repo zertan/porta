@@ -3,7 +3,6 @@ import {
   Table,
   TableHeader,
   TableBody,
-  IRow,
   OnSelect
 } from '@patternfly/react-table'
 import {
@@ -20,7 +19,8 @@ import {
   ChangeStateModal,
   ActionsDropdown,
   BulkAction,
-  useDevAccountsTable
+  generateColumns,
+  generateRows
 } from 'components/developer-accounts'
 import { IDeveloperAccount } from 'types'
 import { useTranslation } from 'i18n/useTranslation'
@@ -54,8 +54,8 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
   /**
    * Init table region
    */
-  const { columns, initialRows } = useDevAccountsTable(accounts, isMultitenant)
-  const [rows, setRows] = useState(initialRows)
+  const columns = useMemo(() => generateColumns(accounts, t), [])
+  const [rows, setRows] = useState(() => generateRows(accounts, isMultitenant))
 
   /**
    * Pagination Region
@@ -67,9 +67,13 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
    * Filtering Region
    */
   const [filters, setFilters] = useState<Record<string, string[]>>({})
-
   const clearAllFilters = () => setFilters({})
 
+  /**
+   * Derived State Region
+   */
+  const selectedRows = rows.filter((r) => Boolean(r.selected))
+  const selectedCount = selectedRows.length
   const filteredRows = useMemo(() => {
     let newRows = [...rows]
 
@@ -85,52 +89,36 @@ const DeveloperAccountsTable: React.FunctionComponent<IDeveloperAccountsTable> =
 
     return newRows
   }, [rows, filters])
-
-  const visibleRows = useMemo(
-    () => filteredRows.slice(startIdx, endIdx),
-    [filteredRows, startIdx, endIdx]
-  )
+  const visibleRows = filteredRows.slice(startIdx, endIdx)
 
   /**
    * Selection Region
    */
-  const selectedRows = rows.filter((r) => Boolean(r.selected))
-  const selectedCount = selectedRows.length
-
-  const onSelectOne: OnSelect = (_ev, isSelected, _rowIndex, rowData) => {
-    const newRows = [...rows]
-    const selectedRow = newRows.find((row) => row.key === rowData.key) as IRow
-    selectedRow.selected = isSelected
-
-    setRows(newRows)
+  const onSelectOne: OnSelect = (_ev, selected, _rowIndex, rowData) => {
+    setRows((prevRows) => prevRows.map((r) => (r.key === rowData.key ? { ...r, selected } : r)))
   }
 
-  const onSelectPage = (isSelected: boolean) => {
-    const newRows = [...initialRows]
-    visibleRows.forEach((vR) => {
-      const selectedRow = newRows.find((nR) => vR.key === nR.key) as IRow
-      selectedRow.selected = isSelected
-    })
-    setRows(newRows)
+  const onSelectPage = (selected: boolean) => {
+    setRows((prevRows) => prevRows.map((r) => {
+      if (visibleRows.find((vR) => vR.key === r.key)) {
+        return { ...r, selected }
+      }
+      return { ...r, selected: false }
+    }))
   }
 
   const onSelectAll = (selected: boolean = true) => {
-    let newRows: (typeof initialRows)
-
-    if (!selected) {
-      newRows = [...initialRows]
-    } else if (filteredRows.length === initialRows.length) {
-      newRows = initialRows.map((nR) => ({ ...nR, selected: true }))
-    } else {
-      newRows = [...initialRows]
-      filteredRows.forEach((fR) => {
-        const selectedRow = newRows.find((nR) => fR.key === nR.key) as IRow
-        selectedRow.selected = true
+    setRows((prevRows) => {
+      if (!selected || filteredRows.length === prevRows.length) {
+        return rows.map((r) => ({ ...r, selected }))
+      }
+      return prevRows.map((r) => {
+        if (filteredRows.find((fR) => fR.key === r.key)) {
+          return { ...r, selected: true }
+        }
+        return { ...r, selected: false }
       })
-      setRows(newRows)
-    }
-
-    setRows(newRows)
+    })
   }
 
   /**
