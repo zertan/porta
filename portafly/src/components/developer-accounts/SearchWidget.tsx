@@ -117,10 +117,10 @@ const SearchWidget: React.FunctionComponent<ISearch> = ({
       onToggle={setIsStateSelectExpanded}
       placeholderText={t('accounts_table.data_toolbar.search_widget.placeholder', { option: filterBy.toLowerCase() })}
     >
-      <SelectOption key="approved" value="Approved" />
-      <SelectOption key="pending" value="Pending" />
-      <SelectOption key="rejected" value="Rejected" />
-      <SelectOption key="suspended" value="Suspended" />
+      <SelectOption key="approved" value={t('state.approved')} />
+      <SelectOption key="pending" value={t('state.pending')} />
+      <SelectOption key="rejected" value={t('state.rejected')} />
+      <SelectOption key="suspended" value={t('state.suspended')} />
     </Select>
   )
 
