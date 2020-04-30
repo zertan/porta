@@ -19,23 +19,23 @@ paths:
       operationId: developerAccountList
       summary: Get developer account list
     parameters:
-    - name: page
-      description: Page in the paginated list. Defaults to 1.
-      schema:
-        type: integer
-      in: query
-      required: false
-    - name: per_page
-      description: Number of results per page. Default and max is 500.
-      schema:
-        type: integer
-      in: query
-      required: false
-    - name: state
-      description: Account state.
-      schema:
-        type: string
-      in: query
+      - name: page
+        description: Page in the paginated list. Defaults to 1.
+        schema:
+          type: integer
+        in: query
+        required: false
+      - name: per_page
+        description: Number of results per page. Default and max is 500.
+        schema:
+          type: integer
+        in: query
+        required: false
+      - name: state
+        description: Account state.
+        schema:
+          type: string
+        in: query
   /users:
     summary: A list of user
     description: A list of users
