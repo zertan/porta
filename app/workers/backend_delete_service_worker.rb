@@ -9,7 +9,9 @@ class BackendDeleteServiceWorker
 
   def perform(event_id)
     event = EventStore::Repository.find_event!(event_id)
-    BackendDeleteStatsWorker.perform_async(event_id)
+    ThreeScale::Core::Service.delete_stats(event.service_id, {})
+    service = Service.new({id: event.service_id}, without_protection: true)
+    service.delete_backend_service
   rescue ActiveRecord::RecordNotFound => exception
     System::ErrorReporting.report_error(exception, parameters: {event_id: event_id})
   end
